@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 use DataCollection\Http\Requests;
 
-class Snapshot extends Controller
+class SnapshotController extends Controller
 {
     //
 }

@@ -8,5 +8,5 @@ use DataCollection\Http\Requests;
 
 class SnapshotController extends Controller
 {
-    //
+    // Push data
 }

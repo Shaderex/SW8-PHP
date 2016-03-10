@@ -156,6 +156,8 @@ return [
         DataCollection\Providers\EventServiceProvider::class,
         DataCollection\Providers\RouteServiceProvider::class,
 
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+
     ],
 
     /*

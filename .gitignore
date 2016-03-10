@@ -6,5 +6,5 @@ Homestead.json
 .env
 *.DS_STORE
 .idea/
-_ide_helper.php
+_ide_helper*
 .phpstorm.meta.php

@@ -25,7 +25,7 @@ class GCMController extends Controller
 
         $participant->save();
 
-        return;
+        return response($deviceID, 200);
 
     }
 }

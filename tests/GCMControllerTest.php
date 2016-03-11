@@ -8,6 +8,9 @@ class GCMControllerTest extends TestCase
     {
         $this->call('GET', 'gcm/notifyAll');
         $this->assertResponseOk();
+
+        $this->call('GET', 'gcm/notifyAll/Testnotification');
+        $this->assertResponseOk();
     }
 
     public function testRegisterDevice()

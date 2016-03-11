@@ -21,6 +21,10 @@ Route::resource('snapshot', 'SnapshotController');
 Route::get('gcm/notifyAll', 'GCMController@notifyAll');
 Route::post('gcm/registerDevice', 'GCMController@registerDevice');
 
+// Debugging route for phpinfo
+Route::get('phpinfo', function () {
+    return phpinfo();
+});
 /*
 |--------------------------------------------------------------------------
 | Application Routes

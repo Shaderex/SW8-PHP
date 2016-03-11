@@ -1,8 +1,6 @@
 <?php
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use DataCollection\Participant;
 
 class GCMControllerTest extends TestCase
 {
@@ -14,9 +12,23 @@ class GCMControllerTest extends TestCase
 
     public function testRegisterDevice()
     {
-        $deviceID = "asduhAUHSusdhHU687687576DGHSGysgdayg";
+        $deviceID = "deviceTestID";
+
         $this->call('POST', 'gcm/registerDevice', ['deviceID' => $deviceID]);
         $this->assertResponseOk();
 
+        $count = Participant::where('deviceID', '=', $deviceID)->count();
+
+        $expectedCount = 1;
+
+        $this->assertEquals($expectedCount, $count);
+
+        $this->call('POST', 'gcm/registerDevice', ['deviceID' => $deviceID]);
+
+        $count = Participant::where('deviceID', '=', $deviceID)->count();
+
+        $this->assertEquals($expectedCount, $count);
+
+        Participant::where('deviceID', '=', $deviceID)->delete();
     }
 }

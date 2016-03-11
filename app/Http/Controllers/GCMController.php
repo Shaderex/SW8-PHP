@@ -17,15 +17,19 @@ class GCMController extends Controller
     public function registerDevice(Request $request)
     {
 
+        // Get the deviceID from the request
         $deviceID = $request->input('deviceID');
 
-        $participant = new Participant;
+        // If the participant with that deviceID does not exist
+        if (!Participant::where('deviceID', '=', $deviceID)->exists()) {
+            $participant = new Participant;
 
-        $participant->deviceID = $deviceID;
+            $participant->deviceID = $deviceID;
 
-        $participant->save();
+            $participant->save();
+        }
 
-        return response($deviceID, 200);
+        return;
 
     }
 }

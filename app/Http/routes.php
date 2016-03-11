@@ -16,6 +16,10 @@ Route::get('/', function () {
 });
 
 Route::resource('snapshot', 'SnapshotController');
+
+Route::get('phpinfo', function () {
+    return phpinfo();
+});
 /*
 |--------------------------------------------------------------------------
 | Application Routes

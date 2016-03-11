@@ -16,6 +16,11 @@ Route::get('/', function () {
 });
 
 Route::resource('snapshot', 'SnapshotController');
+
+// Google Cloud Messaging
+Route::get('gcm/notifyAll', 'GCMController@notifyAll');
+Route::post('gcm/registerDevice', 'GCMController@registerDevice');
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes

@@ -14,7 +14,7 @@
             </div>
             <div class="checkbox">
                 <label>
-                    <input name="private" type="checkbox">
+                    <input name="is_private" type="checkbox">
                     Private
                 </label>
             </div>
@@ -53,3 +53,4 @@
         </form>
     </div>
 @stop
+

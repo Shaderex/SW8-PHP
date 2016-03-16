@@ -39,6 +39,6 @@ Route::group(['middleware' => 'web'], function () {
     Route::auth();
 
     Route::get('/home', 'HomeController@index');
-    Route::get('/campaign/create', 'CampaignsController@create');
-    Route::post('/campaign', 'CampaignsController@store');
+    Route::get('/campaigns/create', 'CampaignsController@create');
+    Route::post('/campaigns', 'CampaignsController@store');
 });

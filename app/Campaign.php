@@ -29,6 +29,7 @@ use Illuminate\Database\Query\Builder;
  * @method static Builder|Campaign whereSampleFrequency($value)
  * @method static Builder|Campaign whereMeasurementFrequency($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\DataCollection\Sensor[] $sensors
  */
 class Campaign extends Model
 {
@@ -42,8 +43,19 @@ class Campaign extends Model
         'measurement_frequency',
     ];
 
+    /**
+     * @param $isPrivate
+     */
     public function setIsPrivateAttribute($isPrivate)
     {
         $this->attributes['is_private'] = $isPrivate ? true : false;
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function sensors()
+    {
+        return $this->belongsToMany(Sensor::class);
     }
 }

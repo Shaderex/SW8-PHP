@@ -13,7 +13,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        \Validator::extend('greater_than', function ($attribute, $value, $parameters) {
+
+            $other = Input::get($parameters[0]);
+
+            return isset($other) && intval($value) > intval($other);
+        }, "Du er ikke god");
+
+
+
     }
 
     /**

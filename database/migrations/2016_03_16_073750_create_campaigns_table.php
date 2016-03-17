@@ -17,7 +17,7 @@ class CreateCampaignsTable extends Migration
             $table->timestamps();
             $table->string('name');
             $table->string('description');
-            $table->boolean('is_private');
+            $table->boolean('is_private')->default(false);
             $table->integer('snapshot_length');
             $table->integer('sample_duration');
             $table->integer('sample_frequency');

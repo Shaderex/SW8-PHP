@@ -3,6 +3,7 @@
 namespace DataCollection\Http\Controllers;
 
 use DataCollection\Campaign;
+use DataCollection\Sensor;
 use Illuminate\Http\Request;
 
 class CampaignsController extends Controller
@@ -26,9 +27,7 @@ class CampaignsController extends Controller
     public function store(Request $request)
     {
         $campaign = $this->saveCampaign($request->all());
-
-
-        return redirect('/')->with(compact('campaign'));
+        return redirect('/');
     }
 
     /**
@@ -41,8 +40,11 @@ class CampaignsController extends Controller
     {
         $campaign = Campaign::create($attributes);
 
-        foreach ($attributes->get('sensors') as $sensor) {
-            
+        if (array_has($attributes, 'sensors')) {
+            foreach ($attributes['sensors'] as $sensor) {
+                $sensorObj = Sensor::firstOrCreate(['name' => $sensor]);
+                $campaign->sensors()->attach($sensorObj->id);
+            }
         }
 
         return $campaign;

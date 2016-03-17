@@ -35,7 +35,7 @@ class CreateSensorsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('sensors');
         Schema::drop('campaign_sensor');
+        Schema::drop('sensors');
     }
 }

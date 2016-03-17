@@ -58,4 +58,12 @@ class Campaign extends Model
     {
         return $this->belongsToMany(Sensor::class);
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function questions()
+    {
+        return $this->hasMany(Question::class);
+    }
 }

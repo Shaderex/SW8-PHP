@@ -42,6 +42,23 @@
                 <td>{{ $campaign->measurement_frequency }}</td>
             </tr>
         </table>
-        {{--<a href="{{  }}" class="btn btn-primary"></a>--}}
+
+        <h3>Questionnaire</h3>
+        <ul id="items">
+            @foreach($campaign->questions as $question)
+                <li>{{ $question->question }}</li>
+            @endforeach
+            {{--Order kunne gøres med jquery liste --}}
+        </ul>
+        <a href="{{ action('QuestionsController@add', [$campaign->id]) }}" class="btn btn-block btn-primary">Add question</a>
+
     </div>
+@stop
+
+@section('scripts')
+    <script src="/js/Sortable.min.js"></script>
+    <script>
+        var el = document.getElementById('items');
+        var sortable = Sortable.create(el);
+    </script>
 @stop

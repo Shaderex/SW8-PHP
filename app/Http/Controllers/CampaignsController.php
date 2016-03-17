@@ -47,8 +47,9 @@ class CampaignsController extends Controller
     {
         $campaign = Campaign::create($attributes);
 
+
         if (array_has($attributes, 'sensors')) {
-            foreach ($attributes['sensors'] as $id => $sensor) {
+            foreach ($attributes['sensors'] as $sensor) {
                 $sensorObj = Sensor::firstOrCreate(['name' => $sensor]);
                 $campaign->sensors()->attach($sensorObj->id);
             }

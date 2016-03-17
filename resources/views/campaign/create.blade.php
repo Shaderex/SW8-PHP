@@ -22,7 +22,7 @@
                 <label for="sensors[]">Sensors</label>
                 <select name="sensors[]" class="js-example-basic-multiple form-control" multiple="multiple">
                     @foreach(\DataCollection\Sensor::all() as $sensor)
-                        <option value="{{ $sensor->id }}">{{ $sensor->name }}</option>
+                        <option value="{{ $sensor->name }}">{{ $sensor->name }}</option>
                     @endforeach
                 </select>
             </div>

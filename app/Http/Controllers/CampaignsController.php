@@ -3,6 +3,7 @@
 namespace DataCollection\Http\Controllers;
 
 use DataCollection\Campaign;
+use DataCollection\Http\Requests\StoreCampaignRequest;
 use DataCollection\Sensor;
 use Illuminate\Http\Request;
 
@@ -21,13 +22,19 @@ class CampaignsController extends Controller
     /**
      * Stores a campaign and redirects to ???
      *
-     * @param Request $request
+     * @param StoreCampaignRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(StoreCampaignRequest $request)
     {
         $campaign = $this->saveCampaign($request->all());
         return redirect('/');
+    }
+
+    public function show($id)
+    {
+        $campaign = Campaign::findOrFail($id);
+        return view('campaign.show', compact('campaign'));
     }
 
     /**
@@ -41,7 +48,7 @@ class CampaignsController extends Controller
         $campaign = Campaign::create($attributes);
 
         if (array_has($attributes, 'sensors')) {
-            foreach ($attributes['sensors'] as $sensor) {
+            foreach ($attributes['sensors'] as $id => $sensor) {
                 $sensorObj = Sensor::firstOrCreate(['name' => $sensor]);
                 $campaign->sensors()->attach($sensorObj->id);
             }

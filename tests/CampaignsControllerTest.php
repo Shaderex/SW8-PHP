@@ -120,7 +120,7 @@ class CampaignsControllerTest extends TestCase
         $this->assertNotNull($campaign->sensors);
     }
 
-    public function testFormValidation()
+    public function testFormValidationManyWrong()
     {
         $input = [
             'name' => '',
@@ -142,7 +142,48 @@ class CampaignsControllerTest extends TestCase
             'snapshot_length',
             'sample_duration',
             'sample_frequency',
+            'sensors'
+        ]);
+    }
+
+    public function testFormValidationNumbersGreaterThan()
+    {
+        $input = [
+            'name' => 'asdasd',
+            'description' => 'sadasdasd',
+            'is_private' => true,
+            'snapshot_length' => 100,
+            'sample_duration' => 101,
+            'sample_frequency' => 102,
+            'measurement_frequency' => PHP_INT_MAX,
+        ];
+
+        $campaign = new Campaign();
+        $campaign->fill($input);
+
+        $this->call('POST', '/campaigns', $input);
+
+        $this->assertSessionHasErrors([
+            'sample_duration',
+            'sample_frequency',
             'measurement_frequency'
         ]);
     }
+
+    public function testShowAction()
+    {
+        $campaign = Campaign::create([
+            'name' => 'asdasd',
+            'description' => 'sadasdasd',
+            'is_private' => true,
+            'snapshot_length' => 100,
+            'sample_duration' => 50,
+            'sample_frequency' => 10,
+            'measurement_frequency' => 5,
+        ]);
+
+        $this->visit("/campaigns/{$campaign->id}")->assertResponseOk();
+    }
+
+
 }

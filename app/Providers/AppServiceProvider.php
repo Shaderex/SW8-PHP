@@ -2,6 +2,8 @@
 
 namespace DataCollection\Providers;
 
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,15 +15,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        \Validator::extend('greater_than', function ($attribute, $value, $parameters) {
+        Validator::extend('lte', function ($attribute, $value, $parameters) {
 
             $other = Input::get($parameters[0]);
-
-            return isset($other) && intval($value) > intval($other);
+            return isset($other) && intval($value) <= intval($other);
         }, "Du er ikke god");
-
-
-
     }
 
     /**

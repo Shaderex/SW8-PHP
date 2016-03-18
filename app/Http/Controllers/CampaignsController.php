@@ -9,6 +9,13 @@ use Illuminate\Http\Request;
 
 class CampaignsController extends Controller
 {
+
+    public function index()
+    {
+        return Campaign::whereIsPrivate(false)->get();
+    }
+
+
     /**
      * Gets the create view
      *
@@ -27,7 +34,7 @@ class CampaignsController extends Controller
      */
     public function store(StoreCampaignRequest $request)
     {
-        $campaign = $this->saveCampaign($request->all());
+        $this->saveCampaign($request->all());
         return redirect('/');
     }
 

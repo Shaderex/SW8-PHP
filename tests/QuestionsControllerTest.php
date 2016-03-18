@@ -1,9 +1,8 @@
 <?php
 
 use DataCollection\Campaign;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
+use DataCollection\Question;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class QuestionsControllerTest extends TestCase
 {
@@ -14,6 +13,12 @@ class QuestionsControllerTest extends TestCase
      */
     protected $campaign;
 
+    private $questions = [
+        'How are you?',
+        'How are you doing?',
+        'What are you doing?',
+        'What did you do?'
+    ];
 
     public function setUp()
     {
@@ -51,6 +56,19 @@ class QuestionsControllerTest extends TestCase
         $this->assertRedirectedTo("/campaigns/{$this->campaign->id}");
     }
 
+    public function testStoreActionValidation()
+    {
+        $this->call(
+            'POST',
+            "/campaigns/{$this->campaign->id}/add-question",
+            [
+                'question' => '',
+            ]
+        );
+
+        $this->assertSessionHasErrors('question');
+    }
+
     public function testStoreActionActuallyStores()
     {
         $this->call(
@@ -65,5 +83,38 @@ class QuestionsControllerTest extends TestCase
 
 
         $this->assertNotNull($this->campaign->questions);
+    }
+
+    public function testChangeOrderAction()
+    {
+        $questionObjs = [];
+
+        foreach ($this->questions as $question) {
+            $questionObj = new Question($question);
+            $this->campaign->questions()->save($questionObj);
+
+            $questionObjs[] = $questionObj;
+        }
+
+        $input = [
+            'order' => [
+                0 => $questionObjs[3]->id,
+                1 => $questionObjs[2]->id,
+                2 => $questionObjs[1]->id,
+                3 => $questionObjs[0]->id,
+            ]
+        ];
+
+        $this->call('POST', "/campaigns/{$this->campaign->id}", $input);
+
+        $this->assertRedirectedTo("/campaigns/{$this->campaign->id}");
+
+        $count = count($questionObjs);
+
+        for ($i = 0; $i < $count; $i++) {
+            $question = Question::find($questionObjs[$i]->id);
+
+            $this->assertEquals($count - 1 - $i, $question->order);
+        }
     }
 }

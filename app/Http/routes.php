@@ -42,6 +42,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/campaigns/create', 'CampaignsController@create');
     Route::post('/campaigns', 'CampaignsController@store');
     Route::get('/campaigns/{campaign}', 'CampaignsController@show');
+    Route::post('/campaigns/{campaign}', 'QuestionsController@changeOrder');
     Route::get('/campaigns/{campaign}/add-question', 'QuestionsController@add');
     Route::post('/campaigns/{campaign}/add-question', 'QuestionsController@store');
 });

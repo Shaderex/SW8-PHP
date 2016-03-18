@@ -30,6 +30,7 @@ use Illuminate\Database\Query\Builder;
  * @method static Builder|Campaign whereMeasurementFrequency($value)
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\DataCollection\Sensor[] $sensors
+ * @property-read \Illuminate\Database\Eloquent\Collection|\DataCollection\Question[] $questions
  */
 class Campaign extends Model
 {

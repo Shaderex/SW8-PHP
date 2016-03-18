@@ -42,15 +42,26 @@
                 <td>{{ $campaign->measurement_frequency }}</td>
             </tr>
         </table>
-
+        <hr>
         <h3>Questionnaire</h3>
-        <ul id="items">
-            @foreach($campaign->questions as $question)
-                <li>{{ $question->question }}</li>
-            @endforeach
-            {{--Order kunne gøres med jquery liste --}}
-        </ul>
-        <a href="{{ action('QuestionsController@add', [$campaign->id]) }}" class="btn btn-block btn-primary">Add question</a>
+        <form action="{{ action('QuestionsController@changeOrder', [$campaign->id]) }}" method="POST">
+            {!! csrf_field() !!}
+            <ul id="items">
+                @foreach($campaign->questions()->orderBy('order')->get() as $question)
+                    <li>
+                        {{ $question->question }}
+                        <input type="hidden" name="order[]" value="{{ $question->id }}">
+                    </li>
+                @endforeach
+            </ul>
+            <input type="submit" class="btn btn-primary " value="Save order">
+            <a href="{{ action('QuestionsController@add', [$campaign->id]) }}" class="btn btn-success">
+                <span class="glyphicon glyphicon-plus"></span>
+                Add question
+            </a>
+        </form>
+        <hr>
+
 
     </div>
 @stop

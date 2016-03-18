@@ -1,9 +1,12 @@
 <?php
 
 use DataCollection\Participant;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class GCMControllerTest extends TestCase
 {
+    use DatabaseMigrations;
+
     public function testNotifyAll()
     {
         $this->call('GET', 'gcm/notifyAll');

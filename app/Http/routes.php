@@ -35,13 +35,14 @@ Route::get('phpinfo', function () {
 | kernel and includes session state, CSRF protection, and more.
 |
 */
-
-Route::group(['middleware' => ['web']], function () {
-    //
-});
-
 Route::group(['middleware' => 'web'], function () {
     Route::auth();
 
     Route::get('/home', 'HomeController@index');
+    Route::get('/campaigns/create', 'CampaignsController@create');
+    Route::post('/campaigns', 'CampaignsController@store');
+    Route::get('/campaigns/{campaign}', 'CampaignsController@show');
+    Route::post('/campaigns/{campaign}', 'QuestionsController@changeOrder');
+    Route::get('/campaigns/{campaign}/add-question', 'QuestionsController@add');
+    Route::post('/campaigns/{campaign}/add-question', 'QuestionsController@store');
 });

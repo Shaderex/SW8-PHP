@@ -21,8 +21,8 @@ class QuestionsController extends Controller
     public function store($id, AddQuestionRequest $request)
     {
         $campaign = Campaign::findOrFail($id);
-        $question = new Question();
 
+        $question = new Question();
         $question->fill($request->all());
 
         $campaign->questions()->save($question);

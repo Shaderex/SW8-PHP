@@ -44,6 +44,11 @@ class Campaign extends Model
         'measurement_frequency',
     ];
 
+    protected $visible = [
+        'name',
+        'id'
+    ];
+
     /**
      * @param $isPrivate
      */

@@ -185,5 +185,24 @@ class CampaignsControllerTest extends TestCase
         $this->visit("/campaigns/{$campaign->id}")->assertResponseOk();
     }
 
+    public function testGetAllCampaignsRequest()
+    {
+        $campaign = Campaign::create([
+            'name' => 'asdasd',
+            'description' => 'sadasdasd',
+            'is_private' => false,
+            'snapshot_length' => 100,
+            'sample_duration' => 50,
+            'sample_frequency' => 10,
+            'measurement_frequency' => 5,
+        ]);
+
+        $this->get('/campaigns')
+            ->seeJson([
+                'id' => 1,
+                'name' => 'asdasd'
+            ]);
+    }
+
 
 }

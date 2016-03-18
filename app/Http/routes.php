@@ -46,3 +46,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/campaigns/{campaign}/add-question', 'QuestionsController@add');
     Route::post('/campaigns/{campaign}/add-question', 'QuestionsController@store');
 });
+
+Route::group(['middleware' => 'api'], function () {
+    Route::get('/campaigns', 'CampaignsController@index');
+});

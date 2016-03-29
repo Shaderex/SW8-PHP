@@ -19,5 +19,12 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Participant extends Model
 {
-    //
+    protected $fillable = [
+        'device_id'
+    ];
+
+    public function campaigns()
+    {
+        return $this->belongsToMany(Campaign::class);
+    }
 }

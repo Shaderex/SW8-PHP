@@ -35,6 +35,11 @@ Route::get('phpinfo', function () {
 | kernel and includes session state, CSRF protection, and more.
 |
 */
+
+Route::group(['middleware' => 'api'], function () {
+    Route::get('/campaigns', 'CampaignsController@index');
+    Route::post('/campaigns/join', 'CampaignsController@joinCampaign');
+});
 Route::group(['middleware' => 'web'], function () {
     Route::auth();
 
@@ -47,6 +52,3 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('/campaigns/{campaign}/add-question', 'QuestionsController@store');
 });
 
-Route::group(['middleware' => 'api'], function () {
-    Route::get('/campaigns', 'CampaignsController@index');
-});

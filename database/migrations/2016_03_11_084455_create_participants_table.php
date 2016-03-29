@@ -14,7 +14,7 @@ class CreateParticipantsTable extends Migration
     {
         Schema::create('participants', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('deviceID');
+            $table->string('device_id')->unique();
             $table->timestamps();
         });
     }

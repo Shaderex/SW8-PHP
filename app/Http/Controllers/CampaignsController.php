@@ -4,8 +4,10 @@ namespace DataCollection\Http\Controllers;
 
 use DataCollection\Campaign;
 use DataCollection\Http\Requests\StoreCampaignRequest;
+use DataCollection\Participant;
 use DataCollection\Sensor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 
 class CampaignsController extends Controller
 {
@@ -42,6 +44,17 @@ class CampaignsController extends Controller
     {
         $campaign = Campaign::findOrFail($id);
         return view('campaign.show', compact('campaign'));
+    }
+
+    public function joinCampaign(Request $request)
+    {
+        $participant = Participant::firstOrCreate([
+            'device_id' => $request->get('device_id'),
+        ]);
+
+        $participant->campaigns()->attach($request->get('campaign_id'));
+
+        return response()->json(['message' => 'success'], 200);
     }
 
     /**

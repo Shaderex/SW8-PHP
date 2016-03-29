@@ -72,4 +72,9 @@ class Campaign extends Model
     {
         return $this->hasMany(Question::class);
     }
+
+    public function participants()
+    {
+        return $this->belongsToMany(Participant::class);
+    }
 }

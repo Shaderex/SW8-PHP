@@ -12,13 +12,11 @@ use PHP_GCM\Message;
 
 class GCMController extends Controller
 {
-    private static $gcmApiKey = "AIzaSyDpHBqbWCfpouWT7vbJ564vymSjT7zvchM";
-
     public function notifyAll($msg = "")
     {
         $numberOfRetryAttempts = 5000;
 
-        $sender = new Sender(GCMController::$gcmApiKey);
+        $sender = new Sender(env('GCM_SECRET'));
         $message = new Message(time(), ['message' => $msg]);
 
         foreach(Participant::all() as $participant) {

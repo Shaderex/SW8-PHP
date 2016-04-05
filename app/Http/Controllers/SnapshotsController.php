@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 use DataCollection\Http\Requests;
 
-class SnapshotController extends Controller
+class SnapshotsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +15,7 @@ class SnapshotController extends Controller
      */
     public function index()
     {
-        return view('snapshot.index');
+        return view('snapshots.index');
     }
 
     /**
@@ -36,6 +36,7 @@ class SnapshotController extends Controller
      */
     public function store(Request $request)
     {
+        echo $request->get('json');
         //
     }
 

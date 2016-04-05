@@ -2,6 +2,7 @@
 
 namespace DataCollection\Http\Controllers;
 
+use DataCollection\Snapshot;
 use Illuminate\Http\Request;
 
 use DataCollection\Http\Requests;
@@ -36,8 +37,12 @@ class SnapshotsController extends Controller
      */
     public function store(Request $request)
     {
-        echo $request->get('json');
-        //
+        $values = $request->all();
+
+        if(!empty($values)) {
+            $snapshot = Snapshot::create($request->all());
+        }
+
     }
 
     /**

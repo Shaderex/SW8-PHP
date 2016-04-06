@@ -6,6 +6,7 @@ use DataCollection\Participant;
 use Illuminate\Http\Request;
 
 use DataCollection\Http\Requests;
+use Illuminate\Http\Response;
 use PHP_GCM\InvalidRequestException;
 use PHP_GCM\Sender;
 use PHP_GCM\Message;
@@ -38,20 +39,9 @@ class GCMController extends Controller
 
     public function registerDevice(Request $request)
     {
-
         // Get the deviceID from the request
         $deviceID = $request->input('deviceID');
 
-        // If the participant with that deviceID does not exist
-        if (!Participant::where('deviceID', '=', $deviceID)->exists()) {
-            $participant = new Participant;
-
-            $participant->deviceID = $deviceID;
-
-            $participant->save();
-        }
-
-        return;
-
+        Participant::firstOrCreate(['device_id' => $deviceID]);
     }
 }

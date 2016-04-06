@@ -31,6 +31,8 @@ use Illuminate\Database\Query\Builder;
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\DataCollection\Sensor[] $sensors
  * @property-read \Illuminate\Database\Eloquent\Collection|\DataCollection\Question[] $questions
+ * @property-read \Illuminate\Database\Eloquent\Collection|\DataCollection\Snapshot[] $snapshots
+ * @property-read \Illuminate\Database\Eloquent\Collection|\DataCollection\Participant[] $participants
  */
 class Campaign extends Model
 {
@@ -71,6 +73,14 @@ class Campaign extends Model
     public function questions()
     {
         return $this->hasMany(Question::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function snapshots()
+    {
+        return $this->hasMany(Snapshot::class);
     }
 
     public function participants()

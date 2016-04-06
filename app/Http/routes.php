@@ -39,6 +39,7 @@ Route::get('phpinfo', function () {
 Route::group(['middleware' => 'api'], function () {
     Route::get('/campaigns', 'CampaignsController@index');
     Route::post('/campaigns/join', 'CampaignsController@joinCampaign');
+    Route::post('/campaigns/{campaign}/snapshots', 'CampaignsController@addSnapshots');
 });
 Route::group(['middleware' => 'web'], function () {
     Route::auth();

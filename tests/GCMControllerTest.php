@@ -32,7 +32,7 @@ class GCMControllerTest extends TestCase
     {
         $deviceID = "A_TESTING_DEVICE_ID";
 
-        $this->call('POST', 'gcm/registerDevice', ['deviceID' => $deviceID]);
+        $this->call('POST', 'gcm/registerDevice', ['device_id' => $deviceID]);
         $this->assertResponseOk();
 
         $count = Participant::whereDeviceId($deviceID)->count();
@@ -41,7 +41,7 @@ class GCMControllerTest extends TestCase
 
         $this->assertEquals($expectedCount, $count);
 
-        $this->call('POST', 'gcm/registerDevice', ['deviceID' => $deviceID]);
+        $this->call('POST', 'gcm/registerDevice', ['device_id' => $deviceID]);
 
         $count = Participant::whereDeviceId($deviceID)->count();
 

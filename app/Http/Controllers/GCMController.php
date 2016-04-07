@@ -21,7 +21,7 @@ class GCMController extends Controller
         $message = new Message(time(), ['message' => $msg]);
         $amountSent = 0;
 
-        foreach(Participant::all() as $participant) {
+        foreach (Participant::all() as $participant) {
             try {
                 $result = $sender->send($message, $participant->device_id, $numberOfRetryAttempts);
                 $amountSent++;
@@ -39,11 +39,8 @@ class GCMController extends Controller
 
     public function registerDevice(Request $request)
     {
-        if(empty($request->all()) || $request->get('deviceID' == null)) {
-            return Response::json(['message' => 'No device id given'], 400);
-        }
         // Get the deviceID from the request
-        $deviceID = $request->input('deviceID');
+        $deviceID = $request->input('device_id');
 
         Participant::firstOrCreate(['device_id' => $deviceID]);
     }

@@ -6,6 +6,7 @@ use DataCollection\Participant;
 use Illuminate\Http\Request;
 
 use DataCollection\Http\Requests;
+use Illuminate\Support\Facades\Response;
 use PHP_GCM\InvalidRequestException;
 use PHP_GCM\Sender;
 use PHP_GCM\Message;
@@ -38,6 +39,9 @@ class GCMController extends Controller
 
     public function registerDevice(Request $request)
     {
+        if(empty($request->all()) || $request->get('deviceID' == null)) {
+            return Response::json(['message' => 'No device id given'], 400);
+        }
         // Get the deviceID from the request
         $deviceID = $request->input('deviceID');
 

@@ -6,7 +6,6 @@ use DataCollection\Participant;
 use Illuminate\Http\Request;
 
 use DataCollection\Http\Requests;
-use Illuminate\Http\Response;
 use PHP_GCM\InvalidRequestException;
 use PHP_GCM\Sender;
 use PHP_GCM\Message;
@@ -19,12 +18,12 @@ class GCMController extends Controller
 
         $sender = new Sender(env('GCM_SECRET'));
         $message = new Message(time(), ['message' => $msg]);
+        $amountSent = 0;
 
         foreach(Participant::all() as $participant) {
-
-            $deviceID = $participant->deviceID;
             try {
-                $result = $sender->send($message, $deviceID, $numberOfRetryAttempts);
+                $result = $sender->send($message, $participant->device_id, $numberOfRetryAttempts);
+                $amountSent++;
             } catch (\InvalidArgumentException $e) {
                 // $deviceRegistrationId was null
             } catch (InvalidRequestException $e) {
@@ -34,7 +33,7 @@ class GCMController extends Controller
             }
         }
 
-        return;
+        return $amountSent . ' devices notified';
     }
 
     public function registerDevice(Request $request)

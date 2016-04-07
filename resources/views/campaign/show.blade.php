@@ -61,7 +61,12 @@
             </a>
         </form>
         <hr>
-
+        <h3>Participant (device ids)</h3>
+        <ul>
+            @foreach($campaign->participants as $participant)
+                <li>{{ $participant->device_id }}</li>
+            @endforeach
+        </ul>
 
     </div>
 @stop

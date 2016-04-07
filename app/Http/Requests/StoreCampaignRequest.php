@@ -25,7 +25,6 @@ class StoreCampaignRequest extends Request
     {
         return [
             'name' => 'required',
-            'sensors' => 'required',
             'snapshot_length' => 'required|numeric|min:1',
             'sample_duration' => 'required|numeric|min:1|lte:snapshot_length',
             'sample_frequency' => 'required|numeric|min:1|lte:sample_duration',

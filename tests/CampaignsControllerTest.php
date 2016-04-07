@@ -135,8 +135,7 @@ class CampaignsControllerTest extends TestCase
             'name',
             'snapshot_length',
             'sample_duration',
-            'sample_frequency',
-            'sensors'
+            'sample_frequency'
         ]);
     }
 

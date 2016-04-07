@@ -6,26 +6,25 @@ use DataCollection\Participant;
 use Illuminate\Http\Request;
 
 use DataCollection\Http\Requests;
+use Illuminate\Support\Facades\Response;
 use PHP_GCM\InvalidRequestException;
 use PHP_GCM\Sender;
 use PHP_GCM\Message;
 
 class GCMController extends Controller
 {
-    private static $gcmApiKey = "AIzaSyDpHBqbWCfpouWT7vbJ564vymSjT7zvchM";
-
     public function notifyAll($msg = "")
     {
         $numberOfRetryAttempts = 5000;
 
-        $sender = new Sender(GCMController::$gcmApiKey);
+        $sender = new Sender(env('GCM_SECRET'));
         $message = new Message(time(), ['message' => $msg]);
+        $amountSent = 0;
 
-        foreach(Participant::all() as $participant) {
-
-            $deviceID = $participant->deviceID;
+        foreach (Participant::all() as $participant) {
             try {
-                $result = $sender->send($message, $deviceID, $numberOfRetryAttempts);
+                $result = $sender->send($message, $participant->device_id, $numberOfRetryAttempts);
+                $amountSent++;
             } catch (\InvalidArgumentException $e) {
                 // $deviceRegistrationId was null
             } catch (InvalidRequestException $e) {
@@ -35,25 +34,14 @@ class GCMController extends Controller
             }
         }
 
-        return;
+        return $amountSent . ' devices notified';
     }
 
     public function registerDevice(Request $request)
     {
-
         // Get the deviceID from the request
-        $deviceID = $request->input('deviceID');
+        $deviceID = $request->input('device_id');
 
-        // If the participant with that deviceID does not exist
-        if (!Participant::where('deviceID', '=', $deviceID)->exists()) {
-            $participant = new Participant;
-
-            $participant->deviceID = $deviceID;
-
-            $participant->save();
-        }
-
-        return;
-
+        Participant::firstOrCreate(['device_id' => $deviceID]);
     }
 }

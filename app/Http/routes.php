@@ -15,8 +15,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('snapshot', 'SnapshotController');
-
 // Google Cloud Messaging
 Route::get('gcm/notifyAll/{msg?}', 'GCMController@notifyAll');
 Route::post('gcm/registerDevice', 'GCMController@registerDevice');
@@ -36,6 +34,20 @@ Route::get('phpinfo', function () {
 |
 */
 
-Route::group(['middleware' => ['web']], function () {
-    //
+Route::group(['middleware' => 'api'], function () {
+    Route::get('/campaigns', 'CampaignsController@index');
+    Route::post('/campaigns/join', 'CampaignsController@joinCampaign');
+    Route::post('/campaigns/{campaign}/snapshots', 'CampaignsController@addSnapshots');
 });
+Route::group(['middleware' => 'web'], function () {
+    Route::auth();
+
+    Route::get('/home', 'HomeController@index');
+    Route::get('/campaigns/create', 'CampaignsController@create');
+    Route::post('/campaigns', 'CampaignsController@store');
+    Route::get('/campaigns/{campaign}', 'CampaignsController@show');
+    Route::post('/campaigns/{campaign}', 'QuestionsController@changeOrder');
+    Route::get('/campaigns/{campaign}/add-question', 'QuestionsController@add');
+    Route::post('/campaigns/{campaign}/add-question', 'QuestionsController@store');
+});
+

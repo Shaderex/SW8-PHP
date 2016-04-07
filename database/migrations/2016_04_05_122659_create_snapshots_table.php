@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateParticipantsTable extends Migration
+class CreateSnapshotsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,9 +12,9 @@ class CreateParticipantsTable extends Migration
      */
     public function up()
     {
-        Schema::create('participants', function (Blueprint $table) {
+        Schema::create('snapshots', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('device_id')->unique();
+            $table->longText('sensor_data_json');
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ class CreateParticipantsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('participants');
+        Schema::drop('snapshots');
     }
 }

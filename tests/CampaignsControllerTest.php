@@ -9,8 +9,7 @@ use Illuminate\Support\Facades\URL;
 class CampaignsControllerTest extends TestCase
 {
     use DatabaseMigrations;
-
-    private $mock;
+    
     private $expectedFields = [
         'name',
         'description',
@@ -34,11 +33,6 @@ class CampaignsControllerTest extends TestCase
         parent::tearDown();
     }
 
-    /**
-     * A basic test example.
-     *
-     * @return void
-     */
     public function testCreationFormIsShown()
     {
         $this->visit('/campaigns/create')->see('form action="' . URL::to('/campaigns') . '" method="post"');
@@ -52,7 +46,6 @@ class CampaignsControllerTest extends TestCase
             $page->see("name=\"{$expectedField}\"");
         }
     }
-
 
     public function testStoreAction()
     {
@@ -74,7 +67,8 @@ class CampaignsControllerTest extends TestCase
         $this->assertRedirectedTo('/');
     }
 
-    public function testStoreActionNoPrivateBool(){
+    public function testStoreActionNoPrivateBool()
+    {
         $input = [
             'name' => 'Jesper',
             'description' => 'dyld',
@@ -202,6 +196,114 @@ class CampaignsControllerTest extends TestCase
                 'id' => 1,
                 'name' => 'asdasd'
             ]);
+    }
+
+    public function testAddSnapshotsValidRequest()
+    {
+
+        $expectedSize = 3;
+        $campaign = Campaign::create([
+            'name' => 'asdasd',
+            'description' => 'sadasdasd',
+            'is_private' => false,
+            'snapshot_length' => 100,
+            'sample_duration' => 50,
+            'sample_frequency' => 10,
+            'measurement_frequency' => 5,
+        ]);
+
+        $snapshot_sensor_data_json = '{"accelerometerSamples": [{"measurements": ["2884548964675320317", "2884345555209779987"]}, {"measurements": ["2884258693897091839", "2884647920598088372"]}]}';
+
+        $input = '{"snapshots":[';
+        for($i = 0; $i < $expectedSize; $i ++) {
+            if($i != 0) {
+                $input .= ',';
+            }
+            $input .= $snapshot_sensor_data_json;
+        }
+        $input .= ']}';
+
+
+        $request = ['snapshots' => $input];
+
+        $this->call('POST', '/campaigns/'.  $campaign->id .'/snapshots', $request);
+
+        $campaign = Campaign::find($campaign->id);
+
+        $actualSize = count($campaign->snapshots);
+
+        $this->assertEquals($expectedSize,$actualSize, "The amount of snapshots do not correspond");
+        $this->assertResponseOk();
+    }
+
+    public function testAddSnapshotsInvalidJsonRequest()
+    {
+        $expectedSize = 3;
+        $campaign = Campaign::create([
+            'name' => 'asdasd',
+            'description' => 'sadasdasd',
+            'is_private' => false,
+            'snapshot_length' => 100,
+            'sample_duration' => 50,
+            'sample_frequency' => 10,
+            'measurement_frequency' => 5,
+        ]);
+
+        $badRequest = ['snapshots' => 'this is not a json string'];
+
+        $this->call('POST', '/campaigns/'.  $campaign->id .'/snapshots', $badRequest);
+
+        $this->assertResponseStatus(400);
+    }
+
+    public function testAddSnapshotsNoJsonRequest()
+    {
+        $campaign = Campaign::create([
+            'name' => 'asdasd',
+            'description' => 'sadasdasd',
+            'is_private' => false,
+            'snapshot_length' => 100,
+            'sample_duration' => 50,
+            'sample_frequency' => 10,
+            'measurement_frequency' => 5,
+        ]);
+
+        $this->call('POST', '/campaigns/'. $campaign->id .'/snapshots/');
+        $this->assertResponseStatus(400);
+    }
+
+    public function testAddSnapshotsNotExistingCampaign()
+    {
+        $this->call('POST', '/campaigns/42/snapshots/');
+        $this->assertResponseStatus(404);
+    }
+
+    public function testAddSnapshotsRequestWithJsonNoSnapshots()
+    {
+        $expectedSize = 0;
+        $campaign = Campaign::create([
+            'name' => 'asdasd',
+            'description' => 'sadasdasd',
+            'is_private' => false,
+            'snapshot_length' => 100,
+            'sample_duration' => 50,
+            'sample_frequency' => 10,
+            'measurement_frequency' => 5,
+        ]);
+
+        $input = '{"snapshots":[]}';
+
+        $request = ['snapshots' => $input];
+
+        $this->call('POST', '/campaigns/'.  $campaign->id .'/snapshots', $request);
+
+        $campaign = Campaign::find($campaign->id);
+
+        $actualSize = count($campaign->snapshots);
+
+        $this->assertEquals($expectedSize,$actualSize, "The amount of snapshots do not correspond");
+
+        $this->assertResponseOk();
     }
 
 

@@ -15,8 +15,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('snapshot', 'SnapshotController');
-
 // Google Cloud Messaging
 Route::get('gcm/notifyAll/{msg?}', 'GCMController@notifyAll');
 Route::post('gcm/registerDevice', 'GCMController@registerDevice');
@@ -39,6 +37,7 @@ Route::get('phpinfo', function () {
 Route::group(['middleware' => 'api'], function () {
     Route::get('/campaigns', 'CampaignsController@index');
     Route::post('/campaigns/join', 'CampaignsController@joinCampaign');
+    Route::post('/campaigns/{campaign}/snapshots', 'CampaignsController@addSnapshots');
 });
 Route::group(['middleware' => 'web'], function () {
     Route::auth();

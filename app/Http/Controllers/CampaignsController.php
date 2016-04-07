@@ -6,6 +6,7 @@ use DataCollection\Campaign;
 use DataCollection\Http\Requests\StoreCampaignRequest;
 use DataCollection\Participant;
 use DataCollection\Sensor;
+use DataCollection\Snapshot;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
@@ -55,6 +56,31 @@ class CampaignsController extends Controller
         $participant->campaigns()->attach($request->get('campaign_id'));
 
         return response()->json(['message' => 'success'], 200);
+    }
+
+    public function addSnapshots($id, Request $request)
+    {
+        $campaign = Campaign::findOrFail($id);
+
+        if(!empty($request->all())) {
+            $snapshotJsonString = $request->get('snapshots');
+            $snapshots = json_decode($snapshotJsonString,true);
+
+            if(!$snapshots) {
+                return Response::json(['message' => 'Cannot decode json'], 400);
+            }
+
+            foreach ($snapshots['snapshots'] as $snapshotAsArray) {
+                $sensor_data_json = json_encode($snapshotAsArray);
+                $snapshot = new Snapshot();
+                $snapshot->fill(['sensor_data_json' => $sensor_data_json]);
+
+                $campaign->snapshots()->save($snapshot);
+            }
+        } else {
+            return Response::json(['message' => 'No json provided'], 400);
+        }
+
     }
 
     /**

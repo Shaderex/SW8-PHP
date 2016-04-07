@@ -236,7 +236,7 @@ class CampaignsControllerTest extends TestCase
         $this->assertResponseOk();
     }
 
-    public function testAddSnapshotsInvalidRequest()
+    public function testAddSnapshotsInvalidJsonRequest()
     {
         $expectedSize = 3;
         $campaign = Campaign::create([
@@ -256,7 +256,7 @@ class CampaignsControllerTest extends TestCase
         $this->assertResponseStatus(400);
     }
 
-    public function testAddSnapshotsEmptyRequest()
+    public function testAddSnapshotsNoJsonRequest()
     {
         $campaign = Campaign::create([
             'name' => 'asdasd',
@@ -276,6 +276,34 @@ class CampaignsControllerTest extends TestCase
     {
         $this->call('POST', '/campaigns/42/snapshots/');
         $this->assertResponseStatus(404);
+    }
+
+    public function testAddSnapshotsRequestWithJsonNoSnapshots()
+    {
+        $expectedSize = 0;
+        $campaign = Campaign::create([
+            'name' => 'asdasd',
+            'description' => 'sadasdasd',
+            'is_private' => false,
+            'snapshot_length' => 100,
+            'sample_duration' => 50,
+            'sample_frequency' => 10,
+            'measurement_frequency' => 5,
+        ]);
+
+        $input = '{"snapshots":[]}';
+
+        $request = ['snapshots' => $input];
+
+        $this->call('POST', '/campaigns/'.  $campaign->id .'/snapshots', $request);
+
+        $campaign = Campaign::find($campaign->id);
+
+        $actualSize = count($campaign->snapshots);
+
+        $this->assertEquals($expectedSize,$actualSize, "The amount of snapshots do not correspond");
+
+        $this->assertResponseOk();
     }
 
 

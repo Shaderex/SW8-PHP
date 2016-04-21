@@ -191,7 +191,7 @@ class CampaignsControllerTest extends TestCase
         ]);
 
         $this->get('/campaigns')
-            ->seeJsonEquals([
+            ->seeJsonContains([
                 'id' => 1,
                 'name' => 'asdasd'
             ]);
@@ -215,7 +215,7 @@ class CampaignsControllerTest extends TestCase
 
         $this->call('POST', '/campaigns', $createCampaignData);
 
-        $campaign = Campaign::latest()->first();
+        $campaign = Campaign::whereName('FourtyTwo')->first();
 
         $questions = [
             ['question' => 'What is the answer to the universe?', 'order' => 0],

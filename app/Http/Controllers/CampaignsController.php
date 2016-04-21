@@ -16,7 +16,7 @@ class CampaignsController extends Controller
 
     public function index()
     {
-        return Campaign::whereIsPrivate(false)->get(['id', 'name'])->first();
+        return Campaign::whereIsPrivate(false)->get(['id', 'name']);
     }
 
     /**

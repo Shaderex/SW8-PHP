@@ -214,6 +214,8 @@ class CampaignsControllerTest extends TestCase
 
         $this->call('POST', '/campaigns', $createCampaignData);
 
+        $this->call('POST', '/campaigns/', $createCampaignData);
+
         $campaign = Campaign::latest()->first();
 
         $expected = [

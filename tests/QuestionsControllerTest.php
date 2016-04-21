@@ -39,7 +39,7 @@ class QuestionsControllerTest extends TestCase
 
     public function testCreateAction()
     {
-        $this->visit("/campaigns/{$this->campaign->id}/add-question")
+        $this->visit("/campaigns/{$this->campaign->id}/questions/create")
             ->assertResponseOk();
     }
 
@@ -47,7 +47,7 @@ class QuestionsControllerTest extends TestCase
     {
         $this->call(
             'POST',
-            "/campaigns/{$this->campaign->id}/add-question",
+            "/campaigns/{$this->campaign->id}/questions",
             [
                 'question' => 'How are you?',
             ]
@@ -60,7 +60,7 @@ class QuestionsControllerTest extends TestCase
     {
         $this->call(
             'POST',
-            "/campaigns/{$this->campaign->id}/add-question",
+            "/campaigns/{$this->campaign->id}/questions",
             [
                 'question' => '',
             ]
@@ -73,7 +73,7 @@ class QuestionsControllerTest extends TestCase
     {
         $this->call(
             'POST',
-            "/campaigns/{$this->campaign->id}/add-question",
+            "/campaigns/{$this->campaign->id}/questions",
             [
                 'question' => 'How are you?',
             ]

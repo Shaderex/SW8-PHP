@@ -55,7 +55,7 @@
                 @endforeach
             </ul>
             <input type="submit" class="btn btn-primary " value="Save order">
-            <a href="{{ action('QuestionsController@add', [$campaign->id]) }}" class="btn btn-success">
+            <a href="{{ action('QuestionsController@create', [$campaign->id]) }}" class="btn btn-success">
                 <span class="glyphicon glyphicon-plus"></span>
                 Add question
             </a>

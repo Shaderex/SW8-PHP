@@ -28,6 +28,11 @@ class Question extends Model
         'order'
     ];
 
+    protected $visible = [
+        'question',
+        'order'
+    ];
+
     public function __construct($question = '')
     {
         $this->question = $question;

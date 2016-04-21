@@ -50,8 +50,7 @@ class CampaignsController extends Controller
         }
 
         if($request->ajax()) {
-            $response = $campaign->toJson();
-            return $response;
+            return  $campaign->toJson();
         } else {
             return view('campaign.show', compact('campaign'));
         }

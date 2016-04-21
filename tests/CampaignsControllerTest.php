@@ -1,6 +1,7 @@
 <?php
 
 use DataCollection\Campaign;
+use DataCollection\Question;
 use DataCollection\Sensor;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\URL;
@@ -214,9 +215,16 @@ class CampaignsControllerTest extends TestCase
 
         $this->call('POST', '/campaigns', $createCampaignData);
 
-        $this->call('POST', '/campaigns/', $createCampaignData);
-
         $campaign = Campaign::latest()->first();
+
+        $questions = [
+            ['question' => 'What is the answer to the universe?', 'order' => 0],
+            ['question' => 'What is the answer to everything?', 'order' => 1]
+        ];
+
+        foreach ($questions as $question) {
+            $this->call('POST', '/campaigns/' . $campaign->id . '/questions', $question);
+        }
 
         $expected = [
             'name' => 'FourtyTwo',
@@ -229,6 +237,10 @@ class CampaignsControllerTest extends TestCase
             'sensors' => [
                 ['name' => 'Gyroscope', 'type' => 5],
                 ['name' => 'Accelerometer', 'type' => 0]
+            ],
+            'questions' => [
+                ['question' => 'What is the answer to the universe?', 'order' => 0],
+                ['question' => 'What is the answer to everything?', 'order' => 1]
             ]
         ];
 

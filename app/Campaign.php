@@ -47,8 +47,16 @@ class Campaign extends Model
     ];
 
     protected $visible = [
+        'id',
         'name',
-        'id'
+        'description',
+        'is_private',
+        'snapshot_length',
+        'sample_duration',
+        'sample_frequency',
+        'measurement_frequency',
+        'sensors',
+        'questions'
     ];
 
     /**

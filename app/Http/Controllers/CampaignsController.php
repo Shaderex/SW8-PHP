@@ -7,6 +7,7 @@ use DataCollection\Http\Requests\StoreCampaignRequest;
 use DataCollection\Participant;
 use DataCollection\Sensor;
 use DataCollection\Snapshot;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
@@ -15,9 +16,8 @@ class CampaignsController extends Controller
 
     public function index()
     {
-        return Campaign::whereIsPrivate(false)->get();
+        return Campaign::whereIsPrivate(false)->get(['id', 'name'])->first();
     }
-
 
     /**
      * Gets the create view
@@ -41,10 +41,20 @@ class CampaignsController extends Controller
         return redirect('/');
     }
 
-    public function show($id)
+    public function show($id, Request $request)
     {
-        $campaign = Campaign::findOrFail($id);
-        return view('campaign.show', compact('campaign'));
+        $campaign = Campaign::with(['sensors', 'questions'])->findOrFail($id);
+
+        if(!$campaign) {
+            throw (new ModelNotFoundException())->setModel(Campaign::class);
+        }
+
+        if($request->ajax()) {
+            $response = $campaign->toJson();
+            return $response;
+        } else {
+            return view('campaign.show', compact('campaign'));
+        }
     }
 
     public function joinCampaign(Request $request)
@@ -62,11 +72,11 @@ class CampaignsController extends Controller
     {
         $campaign = Campaign::findOrFail($id);
 
-        if(!empty($request->all())) {
+        if (!empty($request->all())) {
             $snapshotJsonString = $request->get('snapshots');
-            $snapshots = json_decode($snapshotJsonString,true);
+            $snapshots = json_decode($snapshotJsonString, true);
 
-            if(!$snapshots) {
+            if (!$snapshots) {
                 return Response::json(['message' => 'Cannot decode json'], 400);
             }
 
@@ -80,6 +90,8 @@ class CampaignsController extends Controller
         } else {
             return Response::json(['message' => 'No json provided'], 400);
         }
+
+
 
     }
 
@@ -103,4 +115,6 @@ class CampaignsController extends Controller
 
         return $campaign;
     }
+
+
 }

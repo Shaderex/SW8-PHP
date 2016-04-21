@@ -20,6 +20,12 @@ use Illuminate\Database\Eloquent\Model;
 class Sensor extends Model
 {
     protected $fillable = [
-        'name'
+        'name',
+        'type'
+    ];
+
+    protected $visible = [
+        'name',
+        'type'
     ];
 }

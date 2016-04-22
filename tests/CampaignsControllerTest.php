@@ -225,7 +225,7 @@ class CampaignsControllerTest extends TestCase
         foreach ($questions as $question) {
             $this->call('POST', '/campaigns/' . $campaign->id . '/questions', $question);
         }
-
+        
         $expected = [
             'name' => 'FourtyTwo',
             'description' => 'I intend to find the answer to the universe and everything',
@@ -239,8 +239,8 @@ class CampaignsControllerTest extends TestCase
                 ['name' => 'Accelerometer', 'type' => 0]
             ],
             'questions' => [
-                ['question' => 'What is the answer to the universe?', 'order' => 0],
-                ['question' => 'What is the answer to everything?', 'order' => 1]
+                ['question' => 'What is the answer to the universe?', 'order' => 0, 'id' => 3],
+                ['question' => 'What is the answer to everything?', 'order' => 1, 'id' => 4]
             ]
         ];
 

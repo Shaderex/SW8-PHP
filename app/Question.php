@@ -29,6 +29,7 @@ class Question extends Model
     ];
 
     protected $visible = [
+        'id',
         'question',
         'order'
     ];

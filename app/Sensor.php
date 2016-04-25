@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\DataCollection\Sensor whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\DataCollection\Sensor whereName($value)
  * @mixin \Eloquent
+ * @property integer $type
+ * @method static \Illuminate\Database\Query\Builder|\DataCollection\Sensor whereType($value)
  */
 class Sensor extends Model
 {

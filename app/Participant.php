@@ -16,6 +16,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\DataCollection\Participant whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\DataCollection\Participant whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string $device_id
+ * @property-read \Illuminate\Database\Eloquent\Collection|\DataCollection\Campaign[] $campaigns
+ * @method static \Illuminate\Database\Query\Builder|\DataCollection\Participant whereDeviceId($value)
  */
 class Participant extends Model
 {

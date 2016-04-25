@@ -45,12 +45,12 @@ class CampaignsController extends Controller
     {
         $campaign = Campaign::with(['sensors', 'questions'])->findOrFail($id);
 
-        if(!$campaign) {
+        if (!$campaign) {
             throw (new ModelNotFoundException())->setModel(Campaign::class);
         }
 
-        if($request->ajax()) {
-            return  $campaign->toJson();
+        if ($request->ajax()) {
+            return $campaign->toJson();
         } else {
             return view('campaign.show', compact('campaign'));
         }
@@ -62,9 +62,10 @@ class CampaignsController extends Controller
             'device_id' => $request->get('device_id'),
         ]);
 
-        $participant->campaigns()->attach($request->get('campaign_id'));
+        $campaign = Campaign::with(['sensors', 'questions'])->findOrFail($request->get('campaign_id'));
+        $participant->campaigns()->attach($campaign->id);
 
-        return response()->json(['message' => 'success'], 200);
+        return $campaign;
     }
 
     public function addSnapshots($id, Request $request)
@@ -89,7 +90,6 @@ class CampaignsController extends Controller
         } else {
             return Response::json(['message' => 'No json provided'], 400);
         }
-
 
 
     }

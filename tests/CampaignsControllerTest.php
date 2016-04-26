@@ -1,6 +1,7 @@
 <?php
 
 use DataCollection\Campaign;
+use DataCollection\Participant;
 use DataCollection\Question;
 use DataCollection\Sensor;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -20,6 +21,7 @@ class CampaignsControllerTest extends TestCase
         'sample_frequency',
         'measurement_frequency',
     ];
+    protected $participant;
 
     public function setUp()
     {
@@ -27,6 +29,7 @@ class CampaignsControllerTest extends TestCase
         $this->app = $this->createApplication();
         $this->runDatabaseMigrations();
         $this->artisan('db:seed');
+        $this->participant = Participant::create(['device_id' => 'someRandomString']);
     }
 
     public function tearDown()
@@ -275,13 +278,17 @@ class CampaignsControllerTest extends TestCase
         $input .= ']}';
 
 
-        $request = ['snapshots' => $input];
+        $request = ['snapshots' => $input, 'device_id' => $this->participant->device_id];
 
         $this->call('POST', '/campaigns/' . $campaign->id . '/snapshots', $request);
 
         $campaign = Campaign::find($campaign->id);
 
-        $actualSize = count($campaign->snapshots);
+        $actualSize = 0;
+        foreach($campaign->snapshots as $snapshot) {
+            $this->assertEquals($this->participant->id, $snapshot->participant_id, "The participant ids do not match");
+            $actualSize++;
+        }
 
         $this->assertEquals($expectedSize, $actualSize, "The amount of snapshots do not correspond");
         $this->assertResponseOk();
@@ -299,7 +306,7 @@ class CampaignsControllerTest extends TestCase
             'measurement_frequency' => 5,
         ]);
 
-        $badRequest = ['snapshots' => 'this is not a json string'];
+        $badRequest = ['snapshots' => 'this is not a json string', 'device_id' => $this->participant->device_id];
 
         $this->call('POST', '/campaigns/' . $campaign->id . '/snapshots', $badRequest);
 
@@ -318,7 +325,9 @@ class CampaignsControllerTest extends TestCase
             'measurement_frequency' => 5,
         ]);
 
-        $this->call('POST', '/campaigns/' . $campaign->id . '/snapshots/');
+        $request = ['device_id' => $this->participant->device_id];
+
+        $this->call('POST', '/campaigns/' . $campaign->id . '/snapshots/', $request);
         $this->assertResponseStatus(400);
     }
 
@@ -343,7 +352,7 @@ class CampaignsControllerTest extends TestCase
 
         $input = '{"snapshots":[]}';
 
-        $request = ['snapshots' => $input];
+        $request = ['snapshots' => $input, 'device_id' => $this->participant->device_id];
 
         $this->call('POST', '/campaigns/' . $campaign->id . '/snapshots', $request);
 
@@ -354,5 +363,34 @@ class CampaignsControllerTest extends TestCase
         $this->assertEquals($expectedSize, $actualSize, "The amount of snapshots do not correspond");
 
         $this->assertResponseOk();
+    }
+
+    public function testAddSnapshotsNoDeviceIDRequest()
+    {
+        $campaign = Campaign::create([
+            'name' => 'asdasd',
+            'description' => 'sadasdasd',
+            'is_private' => false,
+            'snapshot_length' => 100,
+            'sample_duration' => 50,
+            'sample_frequency' => 10,
+            'measurement_frequency' => 5,
+        ]);
+
+        $snapshot_sensor_data_json = '{"accelerometerSamples": [{"measurements": ["2884548964675320317", "2884345555209779987"]}, {"measurements": ["2884258693897091839", "2884647920598088372"]}]}';
+        $input = '{"snapshots":[';
+        for ($i = 0; $i < 4; $i++) {
+            if ($i != 0) {
+                $input .= ',';
+            }
+            $input .= $snapshot_sensor_data_json;
+        }
+        $input .= ']}';
+
+
+        $request = ['snapshots' => $input];
+
+        $this->call('POST', '/campaigns/' . $campaign->id . '/snapshots/', $request);
+        $this->assertResponseStatus(404);
     }
 }

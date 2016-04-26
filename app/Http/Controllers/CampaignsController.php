@@ -85,6 +85,10 @@ class CampaignsController extends Controller
                 $snapshot = new Snapshot();
                 $snapshot->fill(['sensor_data_json' => $sensor_data_json]);
 
+                $participant = Participant::where('device_id', '=', $request->get('device_id'))->firstOrFail();
+
+                $snapshot->participant_id = $participant->id;
+
                 $campaign->snapshots()->save($snapshot);
             }
         } else {

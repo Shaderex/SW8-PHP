@@ -60,7 +60,8 @@ class Campaign extends Model
         'sensors',
         'questions',
         'campaign_length',
-        'questionnaire_placement'
+        'questionnaire_placement',
+        'user'
     ];
 
     public static $placements = [
@@ -103,5 +104,10 @@ class Campaign extends Model
     public function participants()
     {
         return $this->belongsToMany(Participant::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

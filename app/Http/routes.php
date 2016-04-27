@@ -39,15 +39,17 @@ Route::group(['middleware' => 'api'], function () {
     Route::post('/campaigns/join', 'CampaignsController@joinCampaign');
     Route::post('/campaigns/{campaign}/snapshots', 'CampaignsController@addSnapshots');
 });
+
 Route::group(['middleware' => 'web'], function () {
     Route::auth();
-
-    Route::get('/home', 'HomeController@index');
-    Route::get('/campaigns/create', 'CampaignsController@create');
-    Route::post('/campaigns', 'CampaignsController@store');
-    Route::get('/campaigns/{campaign}', 'CampaignsController@show');
-    Route::post('/campaigns/{campaign}', 'QuestionsController@changeOrder');
-    Route::get('/campaigns/{campaign}/questions/create', 'QuestionsController@create');
-    Route::post('/campaigns/{campaign}/questions', 'QuestionsController@store');
+    Route::group(['middleware' => 'login'], function () {
+        Route::get('/home', 'HomeController@index');
+        Route::get('/campaigns/create', 'CampaignsController@create');
+        Route::post('/campaigns', 'CampaignsController@store');
+        Route::get('/campaigns/{campaign}', 'CampaignsController@show');
+        Route::post('/campaigns/{campaign}', 'QuestionsController@changeOrder');
+        Route::get('/campaigns/{campaign}/questions/create', 'QuestionsController@create');
+        Route::post('/campaigns/{campaign}/questions', 'QuestionsController@store');
+    });
 });
 

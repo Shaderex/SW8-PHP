@@ -3,6 +3,7 @@
 use DataCollection\Campaign;
 use DataCollection\Question;
 use DataCollection\Sensor;
+use DataCollection\User;
 use Illuminate\Database\Seeder;
 
 class TestCampaignSeeder extends Seeder
@@ -31,6 +32,8 @@ class TestCampaignSeeder extends Seeder
 
             $campaign->questions()->save(new Question('Er du god?'));
             $campaign->questions()->save(new Question('Er du dårlig?'));
+
+            $campaign->user()->associate(factory(User::class)->create())->save();
         }
     }
 }

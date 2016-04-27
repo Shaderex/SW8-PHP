@@ -37,14 +37,14 @@
                        value="{{old('snapshot_length')}}">
             </div>
             <div class="form-group">
-                <label for="sample_duration">Sample duration (The duration of a single sample in a snapshot)</label>
-                <input type="number" name="sample_duration" id="sample_duration" class="form-control"
-                       value="{{old('sample_duration')}}">
-            </div>
-            <div class="form-group">
                 <label for="sample_frequency">Sample frequency (The time between the start of each sample)</label>
                 <input type="number" name="sample_frequency" id="sample_frequency" class="form-control"
                        value="{{old('sample_frequency')}}">
+            </div>
+            <div class="form-group">
+                <label for="sample_duration">Sample duration (The duration of a single sample in a snapshot)</label>
+                <input type="number" name="sample_duration" id="sample_duration" class="form-control"
+                       value="{{old('sample_duration')}}">
             </div>
             <div class="form-group">
                 <label for="measurement_frequency">Measurement frequency (The time between each measurement in a

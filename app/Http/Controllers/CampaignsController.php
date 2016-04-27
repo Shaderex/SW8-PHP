@@ -2,6 +2,7 @@
 
 namespace DataCollection\Http\Controllers;
 
+use Auth;
 use DataCollection\Campaign;
 use DataCollection\Http\Requests\StoreCampaignRequest;
 use DataCollection\Participant;
@@ -43,11 +44,12 @@ class CampaignsController extends Controller
 
     public function show($id, Request $request)
     {
-        $campaign = Campaign::with(['sensors', 'questions'])->findOrFail($id);
+        $campaign = Campaign::with(['sensors', 'questions', 'user'])->findOrFail($id);
 
         if (!$campaign) {
             throw (new ModelNotFoundException())->setModel(Campaign::class);
         }
+
 
         if ($request->ajax()) {
             return $campaign->toJson();
@@ -62,7 +64,7 @@ class CampaignsController extends Controller
             'device_id' => $request->get('device_id'),
         ]);
 
-        $campaign = Campaign::with(['sensors', 'questions'])->findOrFail($request->get('campaign_id'));
+        $campaign = Campaign::with(['sensors', 'questions', 'user'])->findOrFail($request->get('campaign_id'));
         $participant->campaigns()->attach($campaign->id);
 
         return $campaign;
@@ -108,6 +110,8 @@ class CampaignsController extends Controller
     {
         $campaign = Campaign::create($attributes);
 
+        $campaign->user()->associate(Auth::user());
+        $campaign->save();
 
         if (array_has($attributes, 'sensors')) {
             foreach ($attributes['sensors'] as $sensor) {

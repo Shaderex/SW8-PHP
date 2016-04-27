@@ -44,6 +44,8 @@ class Campaign extends Model
         'sample_duration',
         'sample_frequency',
         'measurement_frequency',
+        'campaign_length',
+        'questionnaire_placement'
     ];
 
     protected $visible = [
@@ -56,7 +58,14 @@ class Campaign extends Model
         'sample_frequency',
         'measurement_frequency',
         'sensors',
-        'questions'
+        'questions',
+        'campaign_length',
+        'questionnaire_placement'
+    ];
+
+    public static $placements = [
+        0 => 'end',
+        1 => 'start'
     ];
 
     /**

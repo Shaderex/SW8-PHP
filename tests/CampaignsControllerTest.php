@@ -20,6 +20,8 @@ class CampaignsControllerTest extends TestCase
         'sample_duration',
         'sample_frequency',
         'measurement_frequency',
+        'campaign_length',
+        'questionnaire_placement'
     ];
     protected $participant;
 
@@ -138,7 +140,8 @@ class CampaignsControllerTest extends TestCase
             'name',
             'snapshot_length',
             'sample_duration',
-            'sample_frequency'
+            'sample_frequency',
+            'campaign_length'
         ]);
     }
 
@@ -206,6 +209,7 @@ class CampaignsControllerTest extends TestCase
             'name' => 'FourtyTwo',
             'description' => 'I intend to find the answer to the universe and everything',
             'is_private' => true,
+            'campaign_length' => 1,
             'snapshot_length' => 10,
             'sample_duration' => 10,
             'sample_frequency' => 10,
@@ -233,6 +237,7 @@ class CampaignsControllerTest extends TestCase
             'name' => 'FourtyTwo',
             'description' => 'I intend to find the answer to the universe and everything',
             'is_private' => true,
+            'campaign_length' => 1,
             'snapshot_length' => 10,
             'sample_duration' => 10,
             'sample_frequency' => 10,
@@ -244,7 +249,8 @@ class CampaignsControllerTest extends TestCase
             'questions' => [
                 ['question' => 'What is the answer to the universe?', 'order' => 0, 'id' => 3],
                 ['question' => 'What is the answer to everything?', 'order' => 1, 'id' => 4]
-            ]
+            ],
+            'questionnaire_placement' => 0
         ];
 
         $this->json('GET', '/campaigns/' . $campaign->id , [], ['X-Requested-With' => 'XMLHttpRequest']);

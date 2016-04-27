@@ -27,22 +27,45 @@
                 </select>
             </div>
             <div class="form-group">
-                <label>Snapshot length (Time in minutes between questionnaires)</label>
-                <input type="number" name="snapshot_length" class="form-control" value="{{old('snapshot_length')}}">
+                <label for="campaign_length">Length of the campaign (number of snapshots)</label>
+                <input type="number" name="campaign_length" id="campaign_length" class="form-control"
+                       value="{{old('campaign_length')}}">
             </div>
             <div class="form-group">
-                <label>Sample duration (The duration of a single sample in a snapshot)</label>
-                <input type="number" name="sample_duration" class="form-control" value="{{old('sample_duration')}}">
+                <label for="snapshot_length">Snapshot length (Time in minutes between questionnaires)</label>
+                <input type="number" name="snapshot_length" id="snapshot_length" class="form-control"
+                       value="{{old('snapshot_length')}}">
             </div>
             <div class="form-group">
-                <label>Sample frequency (The time between the start of each sample)</label>
-                <input type="number" name="sample_frequency" class="form-control" value="{{old('sample_frequency')}}">
+                <label for="sample_duration">Sample duration (The duration of a single sample in a snapshot)</label>
+                <input type="number" name="sample_duration" id="sample_duration" class="form-control"
+                       value="{{old('sample_duration')}}">
             </div>
             <div class="form-group">
-                <label>Measurement frequency (The time between each measurement in a sample)</label>
-                <input type="number" name="measurement_frequency" class="form-control" value="{{old('measurement_frequency')}}">
+                <label for="sample_frequency">Sample frequency (The time between the start of each sample)</label>
+                <input type="number" name="sample_frequency" id="sample_frequency" class="form-control"
+                       value="{{old('sample_frequency')}}">
             </div>
-            <!---  field --->
+            <div class="form-group">
+                <label for="measurement_frequency">Measurement frequency (The time between each measurement in a
+                    sample)</label>
+                <input type="number" name="measurement_frequency" id="measurement_frequency" class="form-control"
+                       value="{{old('measurement_frequency')}}">
+            </div>
+            <div class="form-group">
+                <label for="questionnaire_placement">Questionnaire Placement (When should the user answer your
+                    questions?)</label>
+                <select name="questionnaire_placement" id="questionnaire_placement" class="form-control">
+                    @foreach(\DataCollection\Campaign::$placements as $key => $placement)
+                        @if ($key == old('questionnaire_placement'))
+                            <option value="{{ $key }}" selected>{{ $placement }}</option>
+                        @else
+                            <option value="{{ $key }}">{{ $placement }}</option>
+                        @endif
+                    @endforeach
+                </select>
+            </div>
+
             <div class="form-group">
                 <input type="submit" class="btn btn-primary btn-block">
             </div>

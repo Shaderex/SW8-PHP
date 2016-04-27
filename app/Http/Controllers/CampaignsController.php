@@ -2,6 +2,7 @@
 
 namespace DataCollection\Http\Controllers;
 
+use Auth;
 use DataCollection\Campaign;
 use DataCollection\Http\Requests\StoreCampaignRequest;
 use DataCollection\Participant;
@@ -108,6 +109,8 @@ class CampaignsController extends Controller
     {
         $campaign = Campaign::create($attributes);
 
+        $campaign->user()->associate(Auth::user());
+        $campaign->save();
 
         if (array_has($attributes, 'sensors')) {
             foreach ($attributes['sensors'] as $sensor) {

@@ -104,4 +104,9 @@ class Campaign extends Model
     {
         return $this->belongsToMany(Participant::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -2,6 +2,7 @@
 
 use DataCollection\Campaign;
 use DataCollection\Question;
+use DataCollection\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class QuestionsControllerTest extends TestCase
@@ -12,6 +13,11 @@ class QuestionsControllerTest extends TestCase
      * @var Campaign
      */
     protected $campaign;
+
+    /**
+     * @var User
+     */
+    protected $user;
 
     private $questions = [
         'How are you?',
@@ -35,6 +41,9 @@ class QuestionsControllerTest extends TestCase
             'sample_frequency' => 10,
             'measurement_frequency' => 5,
         ]);
+
+        $this->user = User::create(['name' => 'børge', 'email' => 'børge@børgespølser.dk', 'password' => bcrypt('børge')]);
+        $this->actingAs($this->user);
     }
 
     public function testCreateAction()

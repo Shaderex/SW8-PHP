@@ -2,8 +2,7 @@
 
 use DataCollection\Campaign;
 use DataCollection\Participant;
-use DataCollection\Question;
-use DataCollection\Sensor;
+use DataCollection\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\URL;
 
@@ -11,6 +10,7 @@ class CampaignsControllerTest extends TestCase
 {
     use DatabaseMigrations;
 
+    protected $user;
     private $expectedFields = [
         'name',
         'description',
@@ -32,6 +32,9 @@ class CampaignsControllerTest extends TestCase
         $this->runDatabaseMigrations();
         $this->artisan('db:seed');
         $this->participant = Participant::create(['device_id' => 'someRandomString']);
+
+        $this->user = User::create(['name' => 'børge', 'email' => 'børge@børgespølser.dk', 'password' => bcrypt('børge')]);
+        $this->actingAs($this->user);
     }
 
     public function tearDown()
@@ -152,8 +155,8 @@ class CampaignsControllerTest extends TestCase
             'description' => 'sadasdasd',
             'is_private' => true,
             'snapshot_length' => 100,
-            'sample_duration' => 101,
-            'sample_frequency' => 102,
+            'sample_frequency' => 101,
+            'sample_duration' => 102,
             'measurement_frequency' => PHP_INT_MAX,
         ];
 
@@ -232,7 +235,7 @@ class CampaignsControllerTest extends TestCase
         foreach ($questions as $question) {
             $this->call('POST', '/campaigns/' . $campaign->id . '/questions', $question);
         }
-        
+
         $expected = [
             'name' => 'FourtyTwo',
             'description' => 'I intend to find the answer to the universe and everything',
@@ -253,7 +256,7 @@ class CampaignsControllerTest extends TestCase
             'questionnaire_placement' => 0
         ];
 
-        $this->json('GET', '/campaigns/' . $campaign->id , [], ['X-Requested-With' => 'XMLHttpRequest']);
+        $this->json('GET', '/campaigns/' . $campaign->id, [], ['X-Requested-With' => 'XMLHttpRequest']);
         $this->seeJson($expected);
     }
 
@@ -291,7 +294,7 @@ class CampaignsControllerTest extends TestCase
         $campaign = Campaign::find($campaign->id);
 
         $actualSize = 0;
-        foreach($campaign->snapshots as $snapshot) {
+        foreach ($campaign->snapshots as $snapshot) {
             $this->assertEquals($this->participant->id, $snapshot->participant_id, "The participant ids do not match");
             $actualSize++;
         }
@@ -398,5 +401,32 @@ class CampaignsControllerTest extends TestCase
 
         $this->call('POST', '/campaigns/' . $campaign->id . '/snapshots/', $request);
         $this->assertResponseStatus(404);
+    }
+
+    public function testUserIsAttachedOnCreation()
+    {
+        $createCampaignData = [
+            'name' => 'FourtyTwo',
+            'description' => 'I intend to find the answer to the universe and everything',
+            'is_private' => true,
+            'campaign_length' => 1,
+            'snapshot_length' => 10,
+            'sample_duration' => 10,
+            'sample_frequency' => 10,
+            'measurement_frequency' => 10,
+            'sensors' => [
+                'Gyroscope',
+                'Accelerometer'
+            ]
+        ];
+
+        $this->call('POST', '/campaigns', $createCampaignData);
+
+        $this->assertRedirectedTo('/');
+
+        $campaign = Campaign::whereName('FourtyTwo')->first();
+
+        $this->assertNotNull($campaign->user, "The attached user is null");
+        $this->assertEquals($campaign->user->attributes, $this->user->attributes, "The user attached to the campaign is not the expected one");
     }
 }

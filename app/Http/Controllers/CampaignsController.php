@@ -44,11 +44,12 @@ class CampaignsController extends Controller
 
     public function show($id, Request $request)
     {
-        $campaign = Campaign::with(['sensors', 'questions'])->findOrFail($id);
+        $campaign = Campaign::with(['sensors', 'questions', 'user'])->findOrFail($id);
 
         if (!$campaign) {
             throw (new ModelNotFoundException())->setModel(Campaign::class);
         }
+
 
         if ($request->ajax()) {
             return $campaign->toJson();

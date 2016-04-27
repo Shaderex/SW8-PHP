@@ -238,6 +238,9 @@ class CampaignsControllerTest extends TestCase
 
         $expected = [
             'name' => 'FourtyTwo',
+            'user' => [
+                'name' => 'børge'
+            ],
             'description' => 'I intend to find the answer to the universe and everything',
             'is_private' => true,
             'campaign_length' => 1,

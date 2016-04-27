@@ -60,7 +60,8 @@ class Campaign extends Model
         'sensors',
         'questions',
         'campaign_length',
-        'questionnaire_placement'
+        'questionnaire_placement',
+        'user'
     ];
 
     public static $placements = [

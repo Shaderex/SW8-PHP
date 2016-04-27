@@ -31,6 +31,7 @@ class QuestionsControllerTest extends TestCase
         parent::setUp();
         $this->app = $this->createApplication();
         $this->runDatabaseMigrations();
+        $this->artisan('db:seed');
 
         $this->campaign = Campaign::create([
             'name' => 'asdasd',
@@ -42,7 +43,7 @@ class QuestionsControllerTest extends TestCase
             'measurement_frequency' => 5,
         ]);
 
-        $this->user = User::create(['name' => 'børge', 'email' => 'børge@børgespølser.dk', 'password' => bcrypt('børge')]);
+        $this->user = User::first();
         $this->actingAs($this->user);
     }
 

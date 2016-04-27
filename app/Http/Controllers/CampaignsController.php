@@ -64,7 +64,7 @@ class CampaignsController extends Controller
             'device_id' => $request->get('device_id'),
         ]);
 
-        $campaign = Campaign::with(['sensors', 'questions'])->findOrFail($request->get('campaign_id'));
+        $campaign = Campaign::with(['sensors', 'questions', 'user'])->findOrFail($request->get('campaign_id'));
         $participant->campaigns()->attach($campaign->id);
 
         return $campaign;

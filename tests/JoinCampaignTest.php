@@ -45,6 +45,7 @@ class JoinCampaignTest extends TestCase
     {
         $expected = [
             'name' => '60SECOND_TEST_CAMP',
+            'user' => [ 'name' => \DataCollection\User::first()->name ],
             'description' => '60SECOND_TEST_CAMP',
             'is_private' => false,
             'snapshot_length' => 1,

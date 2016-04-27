@@ -33,7 +33,7 @@ class CampaignsControllerTest extends TestCase
         $this->artisan('db:seed');
         $this->participant = Participant::create(['device_id' => 'someRandomString']);
 
-        $this->user = User::create(['name' => 'børge', 'email' => 'børge@børgespølser.dk', 'password' => bcrypt('børge')]);
+        $this->user = User::first();
         $this->actingAs($this->user);
     }
 
@@ -239,7 +239,7 @@ class CampaignsControllerTest extends TestCase
         $expected = [
             'name' => 'FourtyTwo',
             'user' => [
-                'name' => 'børge'
+                'name' => $this->user->name
             ],
             'description' => 'I intend to find the answer to the universe and everything',
             'is_private' => true,

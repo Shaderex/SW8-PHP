@@ -39,6 +39,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'api'], function () {
     Route::post('/campaigns/join', 'CampaignsController@joinCampaign');
     Route::post('/campaigns/{campaign}/snapshots', 'CampaignsController@addSnapshots');
     Route::get('/campaigns/{campaign}', 'CampaignsController@showJson');
+    Route::get('/key', 'KeysController@getKey');
 });
 
 Route::group(['middleware' => 'web'], function () {

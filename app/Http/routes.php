@@ -34,16 +34,18 @@ Route::get('phpinfo', function () {
 |
 */
 
-Route::group(['middleware' => 'api'], function () {
-    Route::get('/campaigns', 'CampaignsController@index');
+Route::group(['middleware' => 'api', 'prefix' => 'api'], function () {
+    Route::get('/campaigns', 'CampaignsController@indexJson');
     Route::post('/campaigns/join', 'CampaignsController@joinCampaign');
     Route::post('/campaigns/{campaign}/snapshots', 'CampaignsController@addSnapshots');
+    Route::get('/campaigns/{campaign}', 'CampaignsController@showJson');
 });
 
 Route::group(['middleware' => 'web'], function () {
     Route::auth();
     Route::group(['middleware' => 'login'], function () {
         Route::get('/home', 'HomeController@index');
+        Route::get('campaigns', 'CampaignsController@index');
         Route::get('/campaigns/create', 'CampaignsController@create');
         Route::post('/campaigns', 'CampaignsController@store');
         Route::get('/campaigns/{campaign}', 'CampaignsController@show');

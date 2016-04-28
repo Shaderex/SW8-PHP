@@ -199,7 +199,7 @@ class CampaignsControllerTest extends TestCase
             'measurement_frequency' => 5,
         ]);
 
-        $this->get('/campaigns')
+        $this->json('GET', '/api/campaigns')
             ->seeJsonContains([
                 'id' => 1,
                 'name' => 'asdasd'
@@ -259,7 +259,7 @@ class CampaignsControllerTest extends TestCase
             'questionnaire_placement' => 0
         ];
 
-        $this->json('GET', '/campaigns/' . $campaign->id, [], ['X-Requested-With' => 'XMLHttpRequest']);
+        $this->json('GET', 'api/campaigns/' . $campaign->id, [], ['X-Requested-With' => 'XMLHttpRequest']);
         $this->seeJson($expected);
     }
 
@@ -292,7 +292,7 @@ class CampaignsControllerTest extends TestCase
 
         $request = ['snapshots' => $input, 'device_id' => $this->participant->device_id];
 
-        $this->call('POST', '/campaigns/' . $campaign->id . '/snapshots', $request);
+        $this->call('POST', 'api/campaigns/' . $campaign->id . '/snapshots', $request);
 
         $campaign = Campaign::find($campaign->id);
 
@@ -320,7 +320,7 @@ class CampaignsControllerTest extends TestCase
 
         $badRequest = ['snapshots' => 'this is not a json string', 'device_id' => $this->participant->device_id];
 
-        $this->call('POST', '/campaigns/' . $campaign->id . '/snapshots', $badRequest);
+        $this->call('POST', 'api/campaigns/' . $campaign->id . '/snapshots', $badRequest);
 
         $this->assertResponseStatus(400);
     }
@@ -339,13 +339,13 @@ class CampaignsControllerTest extends TestCase
 
         $request = ['device_id' => $this->participant->device_id];
 
-        $this->call('POST', '/campaigns/' . $campaign->id . '/snapshots/', $request);
+        $this->call('POST', 'api/campaigns/' . $campaign->id . '/snapshots/', $request);
         $this->assertResponseStatus(400);
     }
 
     public function testAddSnapshotsNotExistingCampaign()
     {
-        $this->call('POST', '/campaigns/42/snapshots/');
+        $this->call('POST', 'api/campaigns/42/snapshots/');
         $this->assertResponseStatus(404);
     }
 
@@ -366,7 +366,7 @@ class CampaignsControllerTest extends TestCase
 
         $request = ['snapshots' => $input, 'device_id' => $this->participant->device_id];
 
-        $this->call('POST', '/campaigns/' . $campaign->id . '/snapshots', $request);
+        $this->call('POST', 'api/campaigns/' . $campaign->id . '/snapshots', $request);
 
         $campaign = Campaign::find($campaign->id);
 
@@ -402,7 +402,7 @@ class CampaignsControllerTest extends TestCase
 
         $request = ['snapshots' => $input];
 
-        $this->call('POST', '/campaigns/' . $campaign->id . '/snapshots/', $request);
+        $this->call('POST', 'api/campaigns/' . $campaign->id . '/snapshots/', $request);
         $this->assertResponseStatus(404);
     }
 
@@ -425,11 +425,20 @@ class CampaignsControllerTest extends TestCase
 
         $this->call('POST', '/campaigns', $createCampaignData);
 
-        $this->assertRedirectedTo('/');
+        $this->assertRedirectedTo('/campaigns');
 
         $campaign = Campaign::whereName('FourtyTwo')->first();
 
         $this->assertNotNull($campaign->user, "The attached user is null");
         $this->assertEquals($campaign->user->attributes, $this->user->attributes, "The user attached to the campaign is not the expected one");
+    }
+
+    public function testAuthUserCampaignsView()
+    {
+        $expectedNames = $this->user->campaigns()->get(['name']);
+
+        foreach ($expectedNames as $name) {
+            $this->visit('/campaigns')->see($name->name);
+        }
     }
 }

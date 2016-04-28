@@ -19,3 +19,18 @@ $factory->define(DataCollection\User::class, function (Faker\Generator $faker) {
         'remember_token' => str_random(10),
     ];
 });
+
+$factory->define(DataCollection\Campaign::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->name,
+        'description' => $faker->paragraph(),
+        'is_private' => false,
+        'campaign_length' => $faker->numberBetween(0, 40),
+        'snapshot_length' => $faker->numberBetween(60000),
+        'sample_duration' => $faker->numberBetween(30000, 60000),
+        'sample_frequency' => $faker->numberBetween(15000, 30000),
+        'measurement_frequency' => $faker->numberBetween(0, 15000),
+        'questionnaire_placement' => $faker->numberBetween(0, 1),
+        'user_id' => factory(DataCollection\User::class, 1)->create()->id
+    ];
+});

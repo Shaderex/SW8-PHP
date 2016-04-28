@@ -13,5 +13,6 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(SensorSeeder::class);
         $this->call(TestCampaignSeeder::class);
+        $this->call(CampaignsSeeder::class);
     }
 }

@@ -20,10 +20,11 @@ class TestCampaignSeeder extends Seeder
                 'name' => '60SECOND_TEST_CAMP',
                 'description' => '60SECOND_TEST_CAMP',
                 'is_private' => false,
-                'snapshot_length' => 1,
-                'sample_duration' => 1,
-                'sample_frequency' => 1,
-                'measurement_frequency' => 1,
+                'campaign_length' => 3,
+                'snapshot_length' => 60000,
+                'sample_duration' => 1000,
+                'sample_frequency' => 1000,
+                'measurement_frequency' => 500,
             ]);
 
             foreach (Sensor::all('id') as $id) {

@@ -25,4 +25,17 @@ class Snapshot extends Model
         'sensor_data_json'
     ];
 
+    protected $hidden = [
+        'sensor_data_json'
+    ];
+
+    protected $appends = [
+        'data'
+    ];
+
+    public function getDataAttribute()
+    {
+        return json_decode($this->sensor_data_json);
+    }
+
 }

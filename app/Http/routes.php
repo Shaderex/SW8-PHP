@@ -52,6 +52,7 @@ Route::group(['middleware' => 'web'], function () {
         Route::post('/campaigns/{campaign}', 'QuestionsController@changeOrder');
         Route::get('/campaigns/{campaign}/questions/create', 'QuestionsController@create');
         Route::post('/campaigns/{campaign}/questions', 'QuestionsController@store');
+        Route::get('/campaigns/{campaign}/snapshots', 'SnapshotsController@index');
     });
 });
 

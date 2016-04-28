@@ -25,7 +25,6 @@ class ChangeDescriptionTypeToText extends Migration
     public function down()
     {
         Schema::table('campaigns', function (Blueprint $table) {
-            $table->string('description')->change();
         });
     }
 }

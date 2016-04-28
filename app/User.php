@@ -46,4 +46,14 @@ class User extends Authenticatable
     protected $visible = [
         'name'
     ];
+
+    /**
+     * An user can be associated to many campaigns
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function campaigns()
+    {
+        return $this->hasMany(Campaign::class);
+    }
 }

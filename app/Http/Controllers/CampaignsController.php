@@ -17,6 +17,12 @@ class CampaignsController extends Controller
 
     public function index()
     {
+        $campaigns = Auth::user()->campaigns;
+        return view('campaign.index', compact('campaigns'));
+    }
+
+    public function indexJson()
+    {
         return Campaign::whereIsPrivate(false)->get(['id', 'name']);
     }
 
@@ -39,23 +45,20 @@ class CampaignsController extends Controller
     public function store(StoreCampaignRequest $request)
     {
         $this->saveCampaign($request->all());
-        return redirect('/');
+        return redirect('campaigns');
     }
 
-    public function show($id, Request $request)
+
+    public function showJson($id)
+    {
+        return Campaign::with(['sensors', 'questions', 'user'])->findOrFail($id);
+    }
+
+    public function show($id)
     {
         $campaign = Campaign::with(['sensors', 'questions', 'user'])->findOrFail($id);
 
-        if (!$campaign) {
-            throw (new ModelNotFoundException())->setModel(Campaign::class);
-        }
-
-
-        if ($request->ajax()) {
-            return $campaign->toJson();
-        } else {
-            return view('campaign.show', compact('campaign'));
-        }
+        return view('campaign.show', compact('campaign'));
     }
 
     public function joinCampaign(Request $request)
@@ -96,8 +99,6 @@ class CampaignsController extends Controller
         } else {
             return Response::json(['message' => 'No json provided'], 400);
         }
-
-
     }
 
     /**

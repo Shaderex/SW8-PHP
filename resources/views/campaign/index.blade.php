@@ -3,6 +3,7 @@
 @section('content')
     <div class="container">
         <h3>Campaigns created by {{ Auth::user()->name }}</h3>
+        <a href="/campaigns/create">Create</a>
         <table class="table table-hover">
             <thead>
             <tr>

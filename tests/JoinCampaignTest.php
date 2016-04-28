@@ -62,7 +62,11 @@ class JoinCampaignTest extends TestCase
                 ['name' => 'Gyroscope', 'type' => 5],
                 ['name' => 'Location', 'type' => 6],
                 ['name' => 'Proximity', 'type' => 7],
-                ['name' => 'Wifi', 'type' => 8]
+                ['name' => 'Wifi', 'type' => 8],
+                ['name' => 'Wrist Accelerometer (Microsoft Band 2)', 'type' => 9],
+                ['name' => 'Galvanic Skin Response (Microsoft Band 2)', 'type' => 10],
+                ['name' => 'UV (Microsoft Band 2)', 'type' => 11],
+                ['name' => 'Heartbeat (Microsoft Band 2)', 'type' => 12],
             ],
             'questions' => [
                 ['question' => 'Er du god?', 'id' => 1, 'order' => null],

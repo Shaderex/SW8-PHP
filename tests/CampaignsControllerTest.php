@@ -202,7 +202,8 @@ class CampaignsControllerTest extends TestCase
         $this->json('GET', '/api/campaigns')
             ->seeJsonContains([
                 'id' => 1,
-                'name' => 'asdasd'
+                'name' => 'asdasd',
+                'user' => $this->user->name,
             ]);
     }
 

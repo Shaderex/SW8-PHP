@@ -22,6 +22,12 @@ class CampaignsSeeder extends Seeder
         foreach ($campaigns as $campaign) {
             $numberOfSensors = $faker->numberBetween(0, $sensors->count());
             $campaign->sensors()->attach($faker->randomElements($sensors->toArray(), $numberOfSensors));
+
+            $numberOfQuestions = $faker->numberBetween(0, 6);
+
+            $questions = factory(DataCollection\Question::class, 3)->make()->all();
+            $campaign->questions()->saveMany($questions);
+
         }
     }
 }

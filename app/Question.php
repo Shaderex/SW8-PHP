@@ -33,9 +33,4 @@ class Question extends Model
         'question',
         'order'
     ];
-
-    public function __construct($question = '')
-    {
-        $this->question = $question;
-    }
 }

@@ -34,3 +34,15 @@ $factory->define(DataCollection\Campaign::class, function (Faker\Generator $fake
         'user_id' => factory(DataCollection\User::class, 1)->create()->id
     ];
 });
+
+
+
+$factory->define(DataCollection\Question::class, function (Faker\Generator $faker) {
+    $question = $faker->sentence();
+
+    $question = str_replace_last('.', '?', $question);
+
+    return [
+        'question' => $question,
+    ];
+});

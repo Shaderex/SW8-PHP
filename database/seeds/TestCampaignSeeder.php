@@ -31,8 +31,14 @@ class TestCampaignSeeder extends Seeder
                 $campaign->sensors()->attach($id);
             }
 
-            $campaign->questions()->save(new Question('Er du god?'));
-            $campaign->questions()->save(new Question('Er du dårlig?'));
+            $question1 = new Question();
+            $question1->question = 'Er du god?';
+            $question2 = new Question();
+            $question2->question = 'Er du dårlig?';
+
+
+            $campaign->questions()->save($question1);
+            $campaign->questions()->save($question2);
 
             $campaign->user()->associate(factory(User::class)->create())->save();
         }

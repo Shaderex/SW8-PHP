@@ -12,10 +12,9 @@ class KeysController extends Controller
 {
     public function getKey()
     {
-        Participant::firstOrCreate(['device_id' => 'someString']);
         $device_id = Input::get('device_id');
 
-        $participant = Participant::whereDeviceId($device_id)->firstOrFail();
+        $participant = Participant::firstOrCreate(['device_id' => $device_id]);
 
         return $participant->enc_key;
     }

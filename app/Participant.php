@@ -27,7 +27,7 @@ class Participant extends Model
         parent::__construct($attributes);
 
         if(!$this->enc_key) {
-            $this->enc_key = aes_key_gen(256);
+            $this->enc_key = aes_key_gen(512);
         }
     }
 

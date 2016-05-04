@@ -64,6 +64,10 @@ class Campaign extends Model
         'user'
     ];
 
+    protected $appends = [
+        'user_name'
+    ];
+
     public static $placements = [
         0 => 'end',
         1 => 'start'
@@ -75,6 +79,11 @@ class Campaign extends Model
     public function setIsPrivateAttribute($isPrivate)
     {
         $this->attributes['is_private'] = $isPrivate ? true : false;
+    }
+
+    public function getUserNameAttribute()
+    {
+        return $this->user()->get('name');
     }
 
     /**
@@ -101,11 +110,17 @@ class Campaign extends Model
         return $this->hasMany(Snapshot::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function participants()
     {
         return $this->belongsToMany(Participant::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function user()
     {
         return $this->belongsTo(User::class);

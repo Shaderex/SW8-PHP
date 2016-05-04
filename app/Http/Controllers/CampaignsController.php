@@ -23,7 +23,14 @@ class CampaignsController extends Controller
 
     public function indexJson()
     {
-        return Campaign::whereIsPrivate(false)->get(['id', 'name']);
+        $results = [];
+        $campaigns = Campaign::with('user')->whereIsPrivate(false)->get();
+
+        foreach ($campaigns as $campaign) {
+            $results[] = ['id' => $campaign->id, 'name' => $campaign->name, 'user' => ($campaign->user ? $campaign->user->name : null)];
+        }
+
+        return $results;
     }
 
     /**

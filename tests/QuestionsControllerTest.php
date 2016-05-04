@@ -100,7 +100,8 @@ class QuestionsControllerTest extends TestCase
         $questionObjs = [];
 
         foreach ($this->questions as $question) {
-            $questionObj = new Question($question);
+            $questionObj = new Question();
+            $questionObj->question = $question;
             $this->campaign->questions()->save($questionObj);
 
             $questionObjs[] = $questionObj;

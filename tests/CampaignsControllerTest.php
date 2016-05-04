@@ -2,6 +2,7 @@
 
 use DataCollection\Campaign;
 use DataCollection\Participant;
+use DataCollection\Question;
 use DataCollection\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\URL;
@@ -202,7 +203,8 @@ class CampaignsControllerTest extends TestCase
         $this->json('GET', '/api/campaigns')
             ->seeJsonContains([
                 'id' => 1,
-                'name' => 'asdasd'
+                'name' => 'asdasd',
+                'user' => $this->user->name,
             ]);
     }
 
@@ -228,12 +230,12 @@ class CampaignsControllerTest extends TestCase
         $campaign = Campaign::whereName('FourtyTwo')->first();
 
         $questions = [
-            ['question' => 'What is the answer to the universe?', 'order' => 0],
-            ['question' => 'What is the answer to everything?', 'order' => 1]
+            new Question(['question' => 'What is the answer to the universe?', 'order' => 0]),
+            new Question(['question' => 'What is the answer to everything?', 'order' => 1])
         ];
 
         foreach ($questions as $question) {
-            $this->call('POST', '/campaigns/' . $campaign->id . '/questions', $question);
+            $campaign->questions()->save($question);
         }
 
         $expected = [
@@ -253,8 +255,8 @@ class CampaignsControllerTest extends TestCase
                 ['name' => 'Accelerometer', 'type' => 0]
             ],
             'questions' => [
-                ['question' => 'What is the answer to the universe?', 'order' => 0, 'id' => 3],
-                ['question' => 'What is the answer to everything?', 'order' => 1, 'id' => 4]
+                ['question' => 'What is the answer to the universe?', 'order' => 0, 'id' => $questions[0]->id],
+                ['question' => 'What is the answer to everything?', 'order' => 1, 'id' => $questions[1]->id]
             ],
             'questionnaire_placement' => 0
         ];

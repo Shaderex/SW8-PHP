@@ -22,8 +22,22 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Participant extends Model
 {
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        if(!$this->enc_key) {
+            $this->enc_key = aes_key_gen(256);
+        }
+    }
+
     protected $fillable = [
-        'device_id'
+        'device_id',
+        'enc_key'
+    ];
+
+    protected $hidden = [
+        'enc_key'
     ];
 
     public function campaigns()

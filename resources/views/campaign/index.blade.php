@@ -6,13 +6,13 @@
                             class="glyphicon glyphicon-plus"></span> Create</a></span></h3>
         <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad blanditiis commodi corporis deserunt doloremque
             earum eligendi eos est expedita facilis hic necessitatibus neque, nobis nostrum pariatur quae repudiandae
-            tenetur ut.</p
+            tenetur ut.</p>
         <hr/>
-        <table class="table-responsive">
+        <table style="width:100%;">
         @foreach($campaigns as $campaign)
             <tr>
-                <td><h4>{{ $campaign->name }}</h4></td>
-                <td rowspan="2">
+                <td style="width:95%;"><h4>{{ $campaign->name }}</h4></td>
+                <td style="width:5%;" rowspan="2">
                     <a href="/campaigns/{{ $campaign->id}}">
                         <i style="font-size: 50px; text-align: right; color: #000;" class="material-icons">keyboard_arrow_right</i>
                     </a>

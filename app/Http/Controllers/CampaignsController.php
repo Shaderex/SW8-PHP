@@ -6,6 +6,7 @@ use Auth;
 use DataCollection\Campaign;
 use DataCollection\Http\Requests\StoreCampaignRequest;
 use DataCollection\Participant;
+use DataCollection\Question;
 use DataCollection\Sensor;
 use DataCollection\Snapshot;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -40,7 +41,7 @@ class CampaignsController extends Controller
      */
     public function create()
     {
-        return view('campaign.create');
+        return view('campaign.create2');
     }
 
     /**
@@ -116,15 +117,29 @@ class CampaignsController extends Controller
      */
     private function saveCampaign(array $attributes)
     {
-        $campaign = Campaign::create($attributes);
+        if(!array_has($attributes, 'is_public')) {
+            $attributes['is_private'] = true;
+        }
 
+        $attributes['sample_duration'] = $attributes['measurement_frequency'] * $attributes['measurement_per_sample'];
+        $attributes['sample_frequency'] =  $attributes['sample_duration'] + $attributes['sample_delay'];
+        $attributes['snapshot_length'] = $attributes['sample_frequency'] * $attributes['samples_per_snapshot'];
+
+        $campaign = Campaign::create($attributes);
         $campaign->user()->associate(Auth::user());
         $campaign->save();
-
         if (array_has($attributes, 'sensors')) {
-            foreach ($attributes['sensors'] as $sensor) {
-                $sensorObj = Sensor::firstOrCreate(['name' => $sensor]);
-                $campaign->sensors()->attach($sensorObj->id);
+            foreach ($attributes['sensors'] as $id => $value) {
+                $campaign->sensors()->attach($id);
+            }
+        }
+
+        if (array_has($attributes, 'questions')) {
+            foreach ($attributes['questions'] as $question) {
+                $questionObject = new Question();
+                $questionObject->question = $question;
+                $questionObject->campaign_id = $campaign->id;
+                $questionObject->save();
             }
         }
 

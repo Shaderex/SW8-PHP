@@ -16,7 +16,8 @@ class SensorSeeder extends Seeder
             ['name' => 'Accelerometer', 'type' => 0],
             ['name' => 'Ambient Light', 'type' => 1],
             ['name' => 'Barometer', 'type' => 2],
-            ['name' => 'Cellular', 'type' => 3],
+            // Depricated
+            //['name' => 'Cellular', 'type' => 3],
             ['name' => 'Compass', 'type' => 4],
             ['name' => 'Gyroscope', 'type' => 5],
             ['name' => 'Location', 'type' => 6],

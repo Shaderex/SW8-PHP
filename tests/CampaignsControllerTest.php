@@ -15,11 +15,10 @@ class CampaignsControllerTest extends TestCase
     private $expectedFields = [
         'name',
         'description',
-        'sensors[]',
-        'is_private',
-        'snapshot_length',
-        'sample_duration',
-        'sample_frequency',
+        'is_public',
+        'measurements_per_sample',
+        'samples_per_snapshot',
+        'sample_delay',
         'measurement_frequency',
         'campaign_length',
         'questionnaire_placement'
@@ -128,11 +127,10 @@ class CampaignsControllerTest extends TestCase
         $input = [
             'name' => '',
             'description' => 'sadasdasd',
-            'is_private' => true,
-            'snapshot_length' => -2,
-            'sample_duration' => 0,
-            'sample_frequency' => 0,
-            'measurement_frequency' => PHP_INT_MAX,
+            'measurements_per_sample' => 0,
+            'samples_per_snapshot' => 0,
+            'sample_delay' => 0,
+            'measurement_frequency' => 0,
         ];
 
         $campaign = new Campaign();
@@ -142,34 +140,10 @@ class CampaignsControllerTest extends TestCase
 
         $this->assertSessionHasErrors([
             'name',
-            'snapshot_length',
-            'sample_duration',
-            'sample_frequency',
+            'measurements_per_sample',
+            'samples_per_snapshot',
+            'sample_delay',
             'campaign_length'
-        ]);
-    }
-
-    public function testFormValidationNumbersGreaterThan()
-    {
-        $input = [
-            'name' => 'asdasd',
-            'description' => 'sadasdasd',
-            'is_private' => true,
-            'snapshot_length' => 100,
-            'sample_frequency' => 101,
-            'sample_duration' => 102,
-            'measurement_frequency' => PHP_INT_MAX,
-        ];
-
-        $campaign = new Campaign();
-        $campaign->fill($input);
-
-        $this->call('POST', '/campaigns', $input);
-
-        $this->assertSessionHasErrors([
-            'sample_duration',
-            'sample_frequency',
-            'measurement_frequency'
         ]);
     }
 
@@ -215,13 +189,12 @@ class CampaignsControllerTest extends TestCase
             'description' => 'I intend to find the answer to the universe and everything',
             'is_private' => true,
             'campaign_length' => 1,
-            'snapshot_length' => 10,
-            'sample_duration' => 10,
-            'sample_frequency' => 10,
-            'measurement_frequency' => 10,
+            'measurements_per_sample' => 1,
+            'samples_per_snapshot' => 1,
+            'sample_delay' => 1,
+            'measurement_frequency' => 1,
             'sensors' => [
-                'Gyroscope',
-                'Accelerometer'
+                1 => "on"
             ]
         ];
 
@@ -246,12 +219,11 @@ class CampaignsControllerTest extends TestCase
             'description' => 'I intend to find the answer to the universe and everything',
             'is_private' => true,
             'campaign_length' => 1,
-            'snapshot_length' => 10,
-            'sample_duration' => 10,
-            'sample_frequency' => 10,
-            'measurement_frequency' => 10,
+            'snapshot_length' => 2,
+            'sample_duration' => 1,
+            'sample_frequency' => 2,
+            'measurement_frequency' => 1,
             'sensors' => [
-                ['name' => 'Gyroscope', 'type' => 5],
                 ['name' => 'Accelerometer', 'type' => 0]
             ],
             'questions' => [
@@ -414,14 +386,15 @@ class CampaignsControllerTest extends TestCase
             'name' => 'FourtyTwo',
             'description' => 'I intend to find the answer to the universe and everything',
             'is_private' => true,
-            'campaign_length' => 1,
-            'snapshot_length' => 10,
-            'sample_duration' => 10,
-            'sample_frequency' => 10,
-            'measurement_frequency' => 10,
+            'measurements_per_sample' => 5,
+            'samples_per_snapshot' => 5,
+            'sample_delay' => 100,
+            'measurement_frequency' => 100,
+            'campaign_length' => 10,
+            'questionnaire_placement' => 0,
             'sensors' => [
-                'Gyroscope',
-                'Accelerometer'
+                5 => "on",
+                2 => "on"
             ]
         ];
 

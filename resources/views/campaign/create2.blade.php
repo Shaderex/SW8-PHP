@@ -128,7 +128,7 @@
                         <br/>
                         <div class="form-inline">
                             <label>Measurement per Sample</label>
-                            <input name="measurement_per_sample" id="measurement_per_sample" type="number" class="form-control pull-right" value="{{ old('measurement_per_sample') }}">
+                            <input name="measurements_per_sample" id="measurements_per_sample" type="number" class="form-control pull-right" value="{{ old('measurement_per_sample') }}">
                         </div>
                         <br/>
                         <div class="form-inline">

@@ -121,7 +121,7 @@ class CampaignsController extends Controller
             $attributes['is_private'] = true;
         }
 
-        $attributes['sample_duration'] = $attributes['measurement_frequency'] * $attributes['measurement_per_sample'];
+        $attributes['sample_duration'] = $attributes['measurement_frequency'] * $attributes['measurements_per_sample'];
         $attributes['sample_frequency'] =  $attributes['sample_duration'] + $attributes['sample_delay'];
         $attributes['snapshot_length'] = $attributes['sample_frequency'] * $attributes['samples_per_snapshot'];
 

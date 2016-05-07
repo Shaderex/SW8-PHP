@@ -34,7 +34,7 @@ class StoreCampaignRequest extends Request
             'campaign_length' => 'required|numeric|min:1',
             'samples_per_snapshot' => 'required|numeric|min:1',
             'sample_delay' => 'required|numeric|min:1',
-            'measurement_per_sample' => 'required|numeric|min:1',
+            'measurements_per_sample' => 'required|numeric|min:1',
             'measurement_frequency' => 'required|numeric|min:1',
         ];
     }

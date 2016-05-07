@@ -155,11 +155,11 @@
                         <label>Questions in the Questionnaire</label>
                         <ul class="list-unstyled" id="questions-list"></ul>
                         <input style="width:81%;" type="text" id="add-question-text" class="form-control">
-                        <a id="add-question-button" style="width:18%;" class="btn-primary btn">Add Question</a>
+                        <a id="add-question-button" style="width:17%;" class="btn-primary btn pull-right">Add Question</a>
                     </div>
 
                     <div class="form-group" style="margin-top: 15px;">
-                        <input type="submit" class="btn btn-primary btn-block" value="Save Campaign">
+                        <input type="submit" class="btn btn-primary btn-block" value="Create Campaign">
                     </div>
                 </form>
                 @if ($errors->any())

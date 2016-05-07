@@ -45,8 +45,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'api'], function () {
 Route::group(['middleware' => 'web'], function () {
     Route::auth();
     Route::group(['middleware' => 'login'], function () {
-        Route::get('/home', 'HomeController@index');
-        Route::get('campaigns', 'CampaignsController@index');
+        Route::get('/', 'CampaignsController@index');
         Route::get('/campaigns/create', 'CampaignsController@create');
         Route::post('/campaigns', 'CampaignsController@store');
         Route::get('/campaigns/{campaign}', 'CampaignsController@show');

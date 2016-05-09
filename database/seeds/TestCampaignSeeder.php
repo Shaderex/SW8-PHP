@@ -24,6 +24,9 @@ class TestCampaignSeeder extends Seeder
                 'snapshot_length' => 60000,
                 'sample_duration' => 1000,
                 'sample_frequency' => 1000,
+                'samples_per_snapshot' => 100,
+                'sample_delay' => 100,
+                'measurements_per_sample' => 100,
                 'measurement_frequency' => 500,
             ]);
 

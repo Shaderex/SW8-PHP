@@ -66,7 +66,7 @@ class CampaignsController extends Controller
     {
         $campaign = Campaign::with(['sensors', 'questions', 'user'])->findOrFail($id);
 
-        return view('campaign.show', compact('campaign'));
+        return view('campaign.show2', compact('campaign'));
     }
 
     public function joinCampaign(Request $request)

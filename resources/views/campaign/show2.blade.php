@@ -46,7 +46,7 @@
                         <div class="col-md-6">
                             <b><i class="material-icons sensor-type-icon">location_on</i>Location</b>
                             <ul>
-                                @foreach(\DataCollection\Sensor::all() as $sensor)
+                                @foreach($campaign->sensors as $sensor)
                                     @if(in_array($sensor->type,[2, 4, 6 ,8]))
                                         <li>
                                             {{ $sensor->name }}
@@ -58,7 +58,7 @@
                         <div class="col-md-6">
                             <b><i class="material-icons sensor-type-icon">directions_run</i>Movement</b>
                             <ul>
-                                @foreach(\DataCollection\Sensor::all() as $sensor)
+                                @foreach($campaign->sensors as $sensor)
                                     @if(in_array($sensor->type,[0, 5, 9]))
                                         <li>
                                             {{ $sensor->name }}
@@ -73,7 +73,7 @@
                         <div class="col-md-6">
                             <b><i class="material-icons sensor-type-icon">favorite</i>Personal Information</b>
                             <ul>
-                                @foreach(\DataCollection\Sensor::all() as $sensor)
+                                @foreach($campaign->sensors as $sensor)
                                     @if(in_array($sensor->type,[10, 12]))
                                         <li>
                                             {{ $sensor->name }}
@@ -85,7 +85,7 @@
                         <div class="col-md-6">
                             <b><i class="material-icons sensor-type-icon">polymer</i>Miscellaneous</b>
                             <ul>
-                                @foreach(\DataCollection\Sensor::all() as $sensor)
+                                @foreach($campaign->sensors as $sensor)
                                     @if(in_array($sensor->type,[1, 7, 11]))
                                         <li>
                                             {{ $sensor->name }}

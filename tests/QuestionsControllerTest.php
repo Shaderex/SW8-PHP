@@ -33,15 +33,7 @@ class QuestionsControllerTest extends TestCase
         $this->runDatabaseMigrations();
         $this->artisan('db:seed');
 
-        $this->campaign = Campaign::create([
-            'name' => 'asdasd',
-            'description' => 'sadasdasd',
-            'is_private' => true,
-            'snapshot_length' => 100,
-            'sample_duration' => 50,
-            'sample_frequency' => 10,
-            'measurement_frequency' => 5,
-        ]);
+        $this->campaign = factory(Campaign::class)->create();
 
         $this->user = User::first();
         $this->actingAs($this->user);

@@ -153,7 +153,8 @@
                     </div>
                     <div class="form-inline">
                         <label>Questions in the Questionnaire</label>
-                        <ul class="list-unstyled" id="questions-list"></ul>
+                        <ul class="list-group" id="questions-list">
+                        </ul>
                         <input style="width:81%;" type="text" id="add-question-text" class="form-control">
                         <a id="add-question-button" style="width:17%;" class="btn-primary btn pull-right">Add Question</a>
                     </div>
@@ -180,6 +181,11 @@
 @stop
 
 @section('scripts')
+    <script src="/js/Sortable.min.js"></script>
+    <script>
+        var el = document.getElementById('questions-list');
+        var sortable = Sortable.create(el);
+    </script>
     <script type="text/javascript">
         $(document).ready(updatePhoneView);
         $(window).resize(updatePhoneView);
@@ -187,6 +193,11 @@
         function updatePhoneView() {
             var phoneDiv = $(".smart-phone");
             phoneDiv.height(phoneDiv.width() * 1.733333333);
+
+            @foreach(old('questions') ?: [] as $question)
+                $("#add-question-text").val("{{$question}}");
+                addQuestion();
+            @endforeach
         }
 
         function addQuestion() {
@@ -200,16 +211,41 @@
                 return;
             }
 
-            $('<input>').attr({
+            var $listItem = $('<li/>', {
+                class: 'list-group-item',
+                text: question,
+            });
+
+            var $removeBtn = $('<a/>', {
+                class: 'btn btn-danger pull-right',
+                href: '#',
+            }).append('<span class="glyphicon glyphicon-trash"></span>')
+
+            $removeBtn.click(function (e) {
+                e.preventDefault();
+                $(this).parent().remove();
+            });
+
+            $listItem.append($removeBtn);
+
+
+
+            $listItem.append($('<input/>', {
                 type: 'hidden',
                 name: 'questions[]',
                 value: question,
-            }).appendTo('form');
-            questionList.append("<li>" + question + "</li>");
-
+            }));
+            questionList.append($listItem);
         }
 
         $("#add-question-button").click(addQuestion);
+        $("#add-question-text").keypress(function (ev) {
+            var keycode = (ev.keyCode ? ev.keyCode : ev.which);
+            if (keycode == '13') {
+                ev.preventDefault();
+                addQuestion();
+            }
+        })
 
 
     </script>

@@ -45,7 +45,10 @@ class Campaign extends Model
         'sample_frequency',
         'measurement_frequency',
         'campaign_length',
-        'questionnaire_placement'
+        'questionnaire_placement',
+        'measurements_per_sample',
+        'sample_delay',
+        'samples_per_snapshot'
     ];
 
     protected $visible = [

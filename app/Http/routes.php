@@ -11,9 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
 
 // Google Cloud Messaging
 Route::get('gcm/notifyAll/{msg?}', 'GCMController@notifyAll');
@@ -44,6 +42,9 @@ Route::group(['middleware' => 'api', 'prefix' => 'api'], function () {
 
 Route::group(['middleware' => 'web'], function () {
     Route::auth();
+    Route::get('/', function () {
+        return view('welcome');
+    });
     Route::group(['middleware' => 'login'], function () {
         Route::get('/home', 'HomeController@index');
         Route::get('campaigns', 'CampaignsController@index');

@@ -21,15 +21,27 @@ $factory->define(DataCollection\User::class, function (Faker\Generator $faker) {
 });
 
 $factory->define(DataCollection\Campaign::class, function (Faker\Generator $faker) {
+
+    $sample_delay = $faker->numberBetween(1, 10000);
+    $measurements_per_sample = $faker->numberBetween(1, 10000);
+    $measurement_frequency = $faker->numberBetween(0, 15000);
+    $sample_duration = $measurement_frequency * $measurements_per_sample;
+    $sample_frequency = $sample_delay + $sample_duration;
+    $samples_per_snapshot = $faker->numberBetween(1, 50);
+    $snapshot_length = $samples_per_snapshot * $sample_frequency;
+
     return [
         'name' => $faker->name,
         'description' => $faker->paragraph(),
         'is_private' => false,
         'campaign_length' => $faker->numberBetween(0, 40),
-        'snapshot_length' => $faker->numberBetween(60000),
-        'sample_frequency' => $faker->numberBetween(30000, 60000),
-        'sample_duration' => $faker->numberBetween(15000, 30000),
-        'measurement_frequency' => $faker->numberBetween(0, 15000),
+        'snapshot_length' => $snapshot_length,
+        'samples_per_snapshot' => $samples_per_snapshot,
+        'sample_frequency' => $sample_frequency,
+        'sample_duration' => $sample_duration,
+        'sample_delay' => $sample_delay,
+        'measurements_per_sample' => $measurements_per_sample,
+        'measurement_frequency' => $measurement_frequency,
         'questionnaire_placement' => $faker->numberBetween(0, 1),
         'user_id' => factory(DataCollection\User::class, 1)->create()->id
     ];

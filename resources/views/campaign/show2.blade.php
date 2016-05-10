@@ -32,6 +32,7 @@
                 <p>
                     {{ $campaign->description }}
                 </p>
+                <strong>Campaign identifier: <span class="label label-primary">{{$campaign->id}}</span></strong>
                 <div class="checkbox">
                     <label>
                         <input name="is_public" type="checkbox" {{ $campaign->is_private ? '' : 'checked' }} disabled>
@@ -46,25 +47,35 @@
                         <div class="col-md-6">
                             <b><i class="material-icons sensor-type-icon">location_on</i>Location</b>
                             <ul>
+                                <?php $count = 0; ?>
                                 @foreach($campaign->sensors as $sensor)
                                     @if(in_array($sensor->type,[2, 4, 6 ,8]))
+                                        <?php $count++; ?>
                                         <li>
                                             {{ $sensor->name }}
                                         </li>
                                     @endif
                                 @endforeach
+                                @if($count == 0)
+                                    <em class="text-muted">none</em>
+                                @endif
                             </ul>
                         </div>
                         <div class="col-md-6">
                             <b><i class="material-icons sensor-type-icon">directions_run</i>Movement</b>
                             <ul>
+                                <?php $count = 0; ?>
                                 @foreach($campaign->sensors as $sensor)
                                     @if(in_array($sensor->type,[0, 5, 9]))
+                                        <?php $count++; ?>
                                         <li>
                                             {{ $sensor->name }}
                                         </li>
                                     @endif
                                 @endforeach
+                                @if($count == 0)
+                                    <em class="text-muted">none</em>
+                                @endif
                             </ul>
                         </div>
                     </div>
@@ -73,25 +84,35 @@
                         <div class="col-md-6">
                             <b><i class="material-icons sensor-type-icon">favorite</i>Personal Information</b>
                             <ul>
+                                <?php $count = 0; ?>
                                 @foreach($campaign->sensors as $sensor)
                                     @if(in_array($sensor->type,[10, 12]))
+                                        <?php $count++; ?>
                                         <li>
                                             {{ $sensor->name }}
                                         </li>
                                     @endif
                                 @endforeach
+                                @if($count == 0)
+                                    <em class="text-muted">none</em>
+                                @endif
                             </ul>
                         </div>
                         <div class="col-md-6">
                             <b><i class="material-icons sensor-type-icon">polymer</i>Miscellaneous</b>
                             <ul>
+                                <?php $count = 0; ?>
                                 @foreach($campaign->sensors as $sensor)
                                     @if(in_array($sensor->type,[1, 7, 11]))
+                                        <?php $count++; ?>
                                         <li>
                                             {{ $sensor->name }}
                                         </li>
                                     @endif
                                 @endforeach
+                                @if($count == 0)
+                                    <em class="text-muted">none</em>
+                                @endif
                             </ul>
                         </div>
                     </div>
@@ -137,12 +158,14 @@
                     snapshot</p>
 
 
-                <strong>Questions in the Questionnaire</strong>
-                <ul id="questions-list">
-                    @foreach($campaign->questions as $question)
-                        <li>{{$question->question}}</li>
-                    @endforeach
-                </ul>
+                @if(count($campaign->questions) > 0)
+                    <strong>Questions in the Questionnaire</strong>
+                    <ul id="questions-list">
+                        @foreach($campaign->questions as $question)
+                            <li>{{$question->question}}</li>
+                        @endforeach
+                    </ul>
+                @endif
 
             </div>
 

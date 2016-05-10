@@ -213,13 +213,14 @@
 
             var $listItem = $('<li/>', {
                 class: 'list-group-item',
+                style: 'position:relative',
                 text: question,
             });
 
             var $removeBtn = $('<a/>', {
-                class: 'btn btn-danger pull-right',
+                style: 'position:absolute; top: 12px; right: 12px; color: red',
                 href: '#',
-            }).append('<span class="glyphicon glyphicon-trash"></span>')
+            }).append('<span class="glyphicon glyphicon-remove"></span>')
 
             $removeBtn.click(function (e) {
                 e.preventDefault();

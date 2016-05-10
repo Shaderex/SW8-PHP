@@ -9,10 +9,10 @@
                         platform.</strong></p>
                 <p>
                     @if(Auth::check())
-                        <a class="btn btn-primary btn-lg" href="/campaigns">Go to management page</a>
+                        <a class="btn btn-primary" href="/campaigns">Go to management page</a>
                     @else
-                        <a class="btn btn-primary btn-lg" href="/login">Login</a>
-                        <a class="btn btn-primary btn-lg" href="/register">Register</a>
+                        <a class="btn btn-primary" href="/login">Login</a>
+                        <a class="btn btn-primary" href="/register">Register</a>
                     @endif
                 </p>
             </div>

@@ -201,8 +201,6 @@
         }
 
         $("#add-question-button").click(addQuestion);
-
-
     </script>
 @stop
 

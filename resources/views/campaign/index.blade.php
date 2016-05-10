@@ -5,10 +5,11 @@
         <h3 class="page-header"><span>Your campaigns <a class="btn-sm btn-success pull-right"
                                                         href="/campaigns/create"><span
                             class="glyphicon glyphicon-plus"></span> Create</a></span></h3>
-        <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad blanditiis commodi corporis
-            deserunt doloremque
-            earum eligendi eos est expedita facilis hic necessitatibus neque, nobis nostrum pariatur quae repudiandae
-            tenetur ut.</p>
+        <p class="lead">
+            This is the complete list of all the campaigns you have created. If you want to start a new campaign simply
+            press the create button and start gathering data in a few minutes. If you want to see details of one of your
+            currently active campaigns simply click one in the list below.
+        </p>
         <hr/>
 
 

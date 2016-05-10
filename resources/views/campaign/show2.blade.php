@@ -2,7 +2,7 @@
 
 <style>
     .smart-phone {
-        width: 100% px;
+        width: 100%;
         background: url("/images/phone.png");
         background-repeat: no-repeat;
         background-size: contain;
@@ -143,10 +143,26 @@
                         <li>{{$question->question}}</li>
                     @endforeach
                 </ul>
+
             </div>
 
-            <div class="col-sm-4 hidden-xs smart-phone">
-                <div class="phone-view">
+            <div class="col-sm-4 hidden-xs">
+                <h4 class="page-header">Progress</h4>
+                <ul class="list-group">
+                    {{--<h4 class="page-header">Current progress</h4>--}}
+                    <li class="list-group-item">
+                        <span class="badge">{{ $participantsCount }}</span>
+                        Participants joined
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge">{{ $snapshotCount }}</span>
+                        Snapshots submitted
+                    </li>
+                </ul>
+                <a href="/campaigns/{{ $campaign->id }}/snapshots" class="btn btn-primary btn-block">Get snapshot
+                    data</a>
+                <div class="smart-phone">
+                    <div class="phone-view"></div>
                 </div>
             </div>
         </div>

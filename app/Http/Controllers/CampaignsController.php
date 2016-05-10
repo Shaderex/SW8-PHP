@@ -65,8 +65,10 @@ class CampaignsController extends Controller
     public function show($id)
     {
         $campaign = Campaign::with(['sensors', 'questions', 'user'])->findOrFail($id);
+        $snapshotCount = $campaign->snapshots()->count();
+        $participantsCount = $campaign->participants()->count();
 
-        return view('campaign.show2', compact('campaign'));
+        return view('campaign.show2', compact('campaign', 'snapshotCount', 'participantsCount'));
     }
 
     public function joinCampaign(Request $request)

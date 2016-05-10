@@ -154,9 +154,6 @@
                     <div class="form-inline">
                         <label>Questions in the Questionnaire</label>
                         <ul class="list-group" id="questions-list">
-                            @foreach(old('questions') ?: [] as $question)
-                                <li class="list-group-item">{{ $question }}</li>
-                            @endforeach
                         </ul>
                         <input style="width:81%;" type="text" id="add-question-text" class="form-control">
                         <a id="add-question-button" style="width:17%;" class="btn-primary btn pull-right">Add Question</a>
@@ -196,6 +193,11 @@
         function updatePhoneView() {
             var phoneDiv = $(".smart-phone");
             phoneDiv.height(phoneDiv.width() * 1.733333333);
+
+            @foreach(old('questions') ?: [] as $question)
+                $("#add-question-text").val("{{$question}}");
+                addQuestion();
+            @endforeach
         }
 
         function addQuestion() {
@@ -214,12 +216,17 @@
                 text: question,
             });
 
-            $listItem.append($('<button/>', {
+            var $removeBtn = $('<a/>', {
                 class: 'btn btn-danger pull-right',
-                click: function(e) {
-                    $(this).parent().remove();
-                }
-            }).append('<span class="glyphicon glyphicon-trash"></span>'));
+                href: '#',
+            }).append('<span class="glyphicon glyphicon-trash"></span>')
+
+            $removeBtn.click(function (e) {
+                e.preventDefault();
+                $(this).parent().remove();
+            });
+
+            $listItem.append($removeBtn);
 
 
 
@@ -232,6 +239,13 @@
         }
 
         $("#add-question-button").click(addQuestion);
+        $("#add-question-text").keypress(function (ev) {
+            var keycode = (ev.keyCode ? ev.keyCode : ev.which);
+            if (keycode == '13') {
+                ev.preventDefault();
+                addQuestion();
+            }
+        })
 
 
     </script>

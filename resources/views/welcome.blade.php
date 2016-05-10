@@ -11,8 +11,8 @@
                     @if(Auth::check())
                         <a class="btn btn-primary" href="/campaigns">Go to management page</a>
                     @else
-                        <a class="btn btn-primary" href="/login">Login</a>
-                        <a class="btn btn-primary" href="/register">Register</a>
+                        <a class="btn btn-primary" href="/login"> <i class="fa fa-btn fa-sign-in"></i>Login</a>
+                        <a class="btn btn-primary" href="/register"><i class="fa fa-btn fa-user"></i>Register</a>
                     @endif
                 </p>
             </div>

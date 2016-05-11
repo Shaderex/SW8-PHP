@@ -20,7 +20,7 @@ class SensorSeeder extends Seeder
             //['name' => 'Cellular', 'type' => 3],
             ['name' => 'Compass', 'type' => 4],
             ['name' => 'Gyroscope', 'type' => 5],
-            ['name' => 'Location', 'type' => 6],
+            ['name' => 'GPS', 'type' => 6],
             ['name' => 'Proximity', 'type' => 7],
             ['name' => 'Wifi', 'type' => 8],
             ['name' => 'Wrist Accelerometer (Microsoft Band 2)', 'type' => 9],

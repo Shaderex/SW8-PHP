@@ -10,6 +10,6 @@ class SnapshotsController extends Controller
     public function index($campaignId)
     {
         $campaign = Campaign::findOrFail($campaignId);
-        return $campaign->snapshots;
+        return $campaign->snapshots()->paginate(15);
     }
 }

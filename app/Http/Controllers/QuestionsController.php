@@ -11,11 +11,11 @@ use DataCollection\Http\Requests;
 
 class QuestionsController extends Controller
 {
-    public function add($id)
+    public function create($id)
     {
         $campaign = Campaign::findOrFail($id);
 
-        return view('question.add', compact('campaign'));
+        return view('question.create', compact('campaign'));
     }
 
     public function store($id, AddQuestionRequest $request)

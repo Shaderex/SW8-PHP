@@ -44,11 +44,36 @@ class Campaign extends Model
         'sample_duration',
         'sample_frequency',
         'measurement_frequency',
+        'campaign_length',
+        'questionnaire_placement',
+        'measurements_per_sample',
+        'sample_delay',
+        'samples_per_snapshot'
     ];
 
     protected $visible = [
+        'id',
         'name',
-        'id'
+        'description',
+        'is_private',
+        'snapshot_length',
+        'sample_duration',
+        'sample_frequency',
+        'measurement_frequency',
+        'sensors',
+        'questions',
+        'campaign_length',
+        'questionnaire_placement',
+        'user'
+    ];
+
+    protected $appends = [
+        'user_name'
+    ];
+
+    public static $placements = [
+        0 => 'end',
+        1 => 'start'
     ];
 
     /**
@@ -57,6 +82,11 @@ class Campaign extends Model
     public function setIsPrivateAttribute($isPrivate)
     {
         $this->attributes['is_private'] = $isPrivate ? true : false;
+    }
+
+    public function getUserNameAttribute()
+    {
+        return $this->user()->get('name');
     }
 
     /**
@@ -72,7 +102,7 @@ class Campaign extends Model
      */
     public function questions()
     {
-        return $this->hasMany(Question::class);
+        return $this->hasMany(Question::class)->orderBy('order');
     }
 
     /**
@@ -83,8 +113,19 @@ class Campaign extends Model
         return $this->hasMany(Snapshot::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function participants()
     {
         return $this->belongsToMany(Participant::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

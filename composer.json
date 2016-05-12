@@ -24,7 +24,10 @@
         ],
         "psr-4": {
             "DataCollection\\": "app/"
-        }
+        },
+        "files": [
+            "app/Helpers/helpers.php"
+        ]
     },
     "autoload-dev": {
         "classmap": [

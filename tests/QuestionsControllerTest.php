@@ -2,6 +2,7 @@
 
 use DataCollection\Campaign;
 use DataCollection\Question;
+use DataCollection\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class QuestionsControllerTest extends TestCase
@@ -12,6 +13,11 @@ class QuestionsControllerTest extends TestCase
      * @var Campaign
      */
     protected $campaign;
+
+    /**
+     * @var User
+     */
+    protected $user;
 
     private $questions = [
         'How are you?',
@@ -25,21 +31,17 @@ class QuestionsControllerTest extends TestCase
         parent::setUp();
         $this->app = $this->createApplication();
         $this->runDatabaseMigrations();
+        $this->artisan('db:seed');
 
-        $this->campaign = Campaign::create([
-            'name' => 'asdasd',
-            'description' => 'sadasdasd',
-            'is_private' => true,
-            'snapshot_length' => 100,
-            'sample_duration' => 50,
-            'sample_frequency' => 10,
-            'measurement_frequency' => 5,
-        ]);
+        $this->campaign = factory(Campaign::class)->create();
+
+        $this->user = User::first();
+        $this->actingAs($this->user);
     }
 
     public function testCreateAction()
     {
-        $this->visit("/campaigns/{$this->campaign->id}/add-question")
+        $this->visit("/campaigns/{$this->campaign->id}/questions/create")
             ->assertResponseOk();
     }
 
@@ -47,7 +49,7 @@ class QuestionsControllerTest extends TestCase
     {
         $this->call(
             'POST',
-            "/campaigns/{$this->campaign->id}/add-question",
+            "/campaigns/{$this->campaign->id}/questions",
             [
                 'question' => 'How are you?',
             ]
@@ -60,7 +62,7 @@ class QuestionsControllerTest extends TestCase
     {
         $this->call(
             'POST',
-            "/campaigns/{$this->campaign->id}/add-question",
+            "/campaigns/{$this->campaign->id}/questions",
             [
                 'question' => '',
             ]
@@ -73,7 +75,7 @@ class QuestionsControllerTest extends TestCase
     {
         $this->call(
             'POST',
-            "/campaigns/{$this->campaign->id}/add-question",
+            "/campaigns/{$this->campaign->id}/questions",
             [
                 'question' => 'How are you?',
             ]
@@ -90,7 +92,8 @@ class QuestionsControllerTest extends TestCase
         $questionObjs = [];
 
         foreach ($this->questions as $question) {
-            $questionObj = new Question($question);
+            $questionObj = new Question();
+            $questionObj->question = $question;
             $this->campaign->questions()->save($questionObj);
 
             $questionObjs[] = $questionObj;

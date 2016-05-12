@@ -2,11 +2,14 @@
 
 namespace DataCollection\Http\Controllers;
 
+use Auth;
 use DataCollection\Campaign;
 use DataCollection\Http\Requests\StoreCampaignRequest;
 use DataCollection\Participant;
+use DataCollection\Question;
 use DataCollection\Sensor;
 use DataCollection\Snapshot;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
@@ -15,9 +18,21 @@ class CampaignsController extends Controller
 
     public function index()
     {
-        return Campaign::whereIsPrivate(false)->get();
+        $campaigns = Auth::user()->campaigns;
+        return view('campaign.index', compact('campaigns'));
     }
 
+    public function indexJson()
+    {
+        $results = [];
+        $campaigns = Campaign::with('user')->whereIsPrivate(false)->get();
+
+        foreach ($campaigns as $campaign) {
+            $results[] = ['id' => $campaign->id, 'name' => $campaign->name, 'user' => ($campaign->user ? $campaign->user->name : null)];
+        }
+
+        return $results;
+    }
 
     /**
      * Gets the create view
@@ -26,7 +41,7 @@ class CampaignsController extends Controller
      */
     public function create()
     {
-        return view('campaign.create');
+        return view('campaign.create2');
     }
 
     /**
@@ -38,13 +53,22 @@ class CampaignsController extends Controller
     public function store(StoreCampaignRequest $request)
     {
         $this->saveCampaign($request->all());
-        return redirect('/');
+        return redirect('campaigns');
+    }
+
+
+    public function showJson($id)
+    {
+        return Campaign::with(['sensors', 'questions', 'user'])->findOrFail($id);
     }
 
     public function show($id)
     {
-        $campaign = Campaign::findOrFail($id);
-        return view('campaign.show', compact('campaign'));
+        $campaign = Campaign::with(['sensors', 'questions', 'user'])->findOrFail($id);
+        $snapshotCount = $campaign->snapshots()->count();
+        $participantsCount = $campaign->participants()->count();
+
+        return view('campaign.show2', compact('campaign', 'snapshotCount', 'participantsCount'));
     }
 
     public function joinCampaign(Request $request)
@@ -53,20 +77,21 @@ class CampaignsController extends Controller
             'device_id' => $request->get('device_id'),
         ]);
 
-        $participant->campaigns()->attach($request->get('campaign_id'));
+        $campaign = Campaign::with(['sensors', 'questions', 'user'])->findOrFail($request->get('campaign_id'));
+        $participant->campaigns()->attach($campaign->id);
 
-        return response()->json(['message' => 'success'], 200);
+        return $campaign;
     }
 
     public function addSnapshots($id, Request $request)
     {
         $campaign = Campaign::findOrFail($id);
 
-        if(!empty($request->all())) {
+        if (!empty($request->all())) {
             $snapshotJsonString = $request->get('snapshots');
-            $snapshots = json_decode($snapshotJsonString,true);
+            $snapshots = json_decode($snapshotJsonString, true);
 
-            if(!$snapshots) {
+            if (!$snapshots) {
                 return Response::json(['message' => 'Cannot decode json'], 400);
             }
 
@@ -75,12 +100,15 @@ class CampaignsController extends Controller
                 $snapshot = new Snapshot();
                 $snapshot->fill(['sensor_data_json' => $sensor_data_json]);
 
+                $participant = Participant::where('device_id', '=', $request->get('device_id'))->firstOrFail();
+
+                $snapshot->participant_id = $participant->id;
+
                 $campaign->snapshots()->save($snapshot);
             }
         } else {
             return Response::json(['message' => 'No json provided'], 400);
         }
-
     }
 
     /**
@@ -91,16 +119,34 @@ class CampaignsController extends Controller
      */
     private function saveCampaign(array $attributes)
     {
+        if(!array_has($attributes, 'is_public')) {
+            $attributes['is_private'] = true;
+        }
+
+        $attributes['sample_duration'] = $attributes['measurement_frequency'] * $attributes['measurements_per_sample'];
+        $attributes['sample_frequency'] =  $attributes['sample_duration'] + $attributes['sample_delay'];
+        $attributes['snapshot_length'] = $attributes['sample_frequency'] * $attributes['samples_per_snapshot'];
+
         $campaign = Campaign::create($attributes);
-
-
+        $campaign->user()->associate(Auth::user());
+        $campaign->save();
         if (array_has($attributes, 'sensors')) {
-            foreach ($attributes['sensors'] as $sensor) {
-                $sensorObj = Sensor::firstOrCreate(['name' => $sensor]);
-                $campaign->sensors()->attach($sensorObj->id);
+            foreach ($attributes['sensors'] as $id => $value) {
+                $campaign->sensors()->attach($id);
+            }
+        }
+
+        if (array_has($attributes, 'questions')) {
+            foreach ($attributes['questions'] as $question) {
+                $questionObject = new Question();
+                $questionObject->question = $question;
+                $questionObject->campaign_id = $campaign->id;
+                $questionObject->save();
             }
         }
 
         return $campaign;
     }
+
+
 }

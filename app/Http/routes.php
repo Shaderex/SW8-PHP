@@ -11,9 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
 
 // Google Cloud Messaging
 Route::get('gcm/notifyAll/{msg?}', 'GCMController@notifyAll');
@@ -34,20 +32,29 @@ Route::get('phpinfo', function () {
 |
 */
 
-Route::group(['middleware' => 'api'], function () {
-    Route::get('/campaigns', 'CampaignsController@index');
+Route::group(['middleware' => 'api', 'prefix' => 'api'], function () {
+    Route::get('/campaigns', 'CampaignsController@indexJson');
     Route::post('/campaigns/join', 'CampaignsController@joinCampaign');
     Route::post('/campaigns/{campaign}/snapshots', 'CampaignsController@addSnapshots');
+    Route::get('/campaigns/{campaign}', 'CampaignsController@showJson');
+    Route::get('/key', 'KeysController@getKey');
 });
+
 Route::group(['middleware' => 'web'], function () {
     Route::auth();
-
-    Route::get('/home', 'HomeController@index');
-    Route::get('/campaigns/create', 'CampaignsController@create');
-    Route::post('/campaigns', 'CampaignsController@store');
-    Route::get('/campaigns/{campaign}', 'CampaignsController@show');
-    Route::post('/campaigns/{campaign}', 'QuestionsController@changeOrder');
-    Route::get('/campaigns/{campaign}/add-question', 'QuestionsController@add');
-    Route::post('/campaigns/{campaign}/add-question', 'QuestionsController@store');
+    Route::get('/', function () {
+        return view('welcome');
+    });
+    Route::group(['middleware' => 'login'], function () {
+        Route::get('/home', 'HomeController@index');
+        Route::get('campaigns', 'CampaignsController@index');
+        Route::get('/campaigns/create', 'CampaignsController@create');
+        Route::post('/campaigns', 'CampaignsController@store');
+        Route::get('/campaigns/{campaign}', 'CampaignsController@show');
+        Route::post('/campaigns/{campaign}', 'QuestionsController@changeOrder');
+        Route::get('/campaigns/{campaign}/questions/create', 'QuestionsController@create');
+        Route::post('/campaigns/{campaign}/questions', 'QuestionsController@store');
+        Route::get('/campaigns/{campaign}/snapshots', 'SnapshotsController@index');
+    });
 });
 

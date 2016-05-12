@@ -1,31 +1,40 @@
 <?php
 
 use DataCollection\Campaign;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
+use DataCollection\Participant;
+use DataCollection\Question;
+use DataCollection\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\URL;
 
 class CampaignsControllerTest extends TestCase
 {
     use DatabaseMigrations;
-    
+
+    protected $user;
     private $expectedFields = [
         'name',
         'description',
-        'sensors[]',
-        'is_private',
-        'snapshot_length',
-        'sample_duration',
-        'sample_frequency',
+        'is_public',
+        'measurements_per_sample',
+        'samples_per_snapshot',
+        'sample_delay',
         'measurement_frequency',
+        'campaign_length',
+        'questionnaire_placement'
     ];
+    protected $participant;
 
     public function setUp()
     {
         parent::setUp();
         $this->app = $this->createApplication();
         $this->runDatabaseMigrations();
+        $this->artisan('db:seed');
+        $this->participant = Participant::create(['device_id' => 'someRandomString']);
+
+        $this->user = User::first();
+        $this->actingAs($this->user);
     }
 
     public function tearDown()
@@ -86,7 +95,6 @@ class CampaignsControllerTest extends TestCase
         $this->assertRedirectedTo('/');
     }
 
-
     public function testStoreActionWithSensors()
     {
         $input = [
@@ -119,11 +127,10 @@ class CampaignsControllerTest extends TestCase
         $input = [
             'name' => '',
             'description' => 'sadasdasd',
-            'is_private' => true,
-            'snapshot_length' => -2,
-            'sample_duration' => 0,
-            'sample_frequency' => 0,
-            'measurement_frequency' => PHP_INT_MAX,
+            'measurements_per_sample' => 0,
+            'samples_per_snapshot' => 0,
+            'sample_delay' => 0,
+            'measurement_frequency' => 0,
         ];
 
         $campaign = new Campaign();
@@ -133,89 +140,176 @@ class CampaignsControllerTest extends TestCase
 
         $this->assertSessionHasErrors([
             'name',
-            'snapshot_length',
-            'sample_duration',
-            'sample_frequency'
-        ]);
-    }
-
-    public function testFormValidationNumbersGreaterThan()
-    {
-        $input = [
-            'name' => 'asdasd',
-            'description' => 'sadasdasd',
-            'is_private' => true,
-            'snapshot_length' => 100,
-            'sample_duration' => 101,
-            'sample_frequency' => 102,
-            'measurement_frequency' => PHP_INT_MAX,
-        ];
-
-        $campaign = new Campaign();
-        $campaign->fill($input);
-
-        $this->call('POST', '/campaigns', $input);
-
-        $this->assertSessionHasErrors([
-            'sample_duration',
-            'sample_frequency',
-            'measurement_frequency'
+            'measurements_per_sample',
+            'samples_per_snapshot',
+            'sample_delay',
+            'campaign_length'
         ]);
     }
 
     public function testShowAction()
     {
-        $campaign = Campaign::create([
-            'name' => 'asdasd',
-            'description' => 'sadasdasd',
-            'is_private' => true,
-            'snapshot_length' => 100,
-            'sample_duration' => 50,
-            'sample_frequency' => 10,
-            'measurement_frequency' => 5,
-        ]);
-
+        $campaign = factory(Campaign::class)->create();
         $this->visit("/campaigns/{$campaign->id}")->assertResponseOk();
     }
 
     public function testGetAllCampaignsRequest()
     {
-        $campaign = Campaign::create([
-            'name' => 'asdasd',
-            'description' => 'sadasdasd',
-            'is_private' => false,
-            'snapshot_length' => 100,
-            'sample_duration' => 50,
-            'sample_frequency' => 10,
-            'measurement_frequency' => 5,
-        ]);
+        $campaign = factory(Campaign::class)->create();
 
-        $this->get('/campaigns')
-            ->seeJson([
-                'id' => 1,
-                'name' => 'asdasd'
+        $this->json('GET', '/api/campaigns')
+            ->seeJsonContains([
+                'id' => $campaign->id,
+                'name' => $campaign->name,
+                'user' => $this->user->name,
             ]);
     }
 
+    public function testGetCampaignGetSpecification()
+    {
+        $createCampaignData = [
+            'name' => 'FourtyTwo',
+            'description' => 'I intend to find the answer to the universe and everything',
+            'is_private' => true,
+            'campaign_length' => 1,
+            'measurements_per_sample' => 1,
+            'samples_per_snapshot' => 1,
+            'sample_delay' => 1,
+            'measurement_frequency' => 1,
+            'sensors' => [
+                1 => "on"
+            ]
+        ];
+
+        $this->call('POST', '/campaigns', $createCampaignData);
+
+        $campaign = Campaign::whereName('FourtyTwo')->first();
+
+        $questions = [
+            new Question(['question' => 'What is the answer to the universe?', 'order' => 0]),
+            new Question(['question' => 'What is the answer to everything?', 'order' => 1])
+        ];
+
+        foreach ($questions as $question) {
+            $campaign->questions()->save($question);
+        }
+
+        $expected = [
+            'name' => 'FourtyTwo',
+            'user' => [
+                'name' => $this->user->name
+            ],
+            'description' => 'I intend to find the answer to the universe and everything',
+            'is_private' => true,
+            'campaign_length' => 1,
+            'snapshot_length' => 2,
+            'sample_duration' => 1,
+            'sample_frequency' => 2,
+            'measurement_frequency' => 1,
+            'sensors' => [
+                ['name' => 'Accelerometer', 'type' => 0]
+            ],
+            'questions' => [
+                ['question' => 'What is the answer to the universe?', 'order' => 0, 'id' => $questions[0]->id],
+                ['question' => 'What is the answer to everything?', 'order' => 1, 'id' => $questions[1]->id]
+            ],
+            'questionnaire_placement' => 0
+        ];
+
+        $this->json('GET', 'api/campaigns/' . $campaign->id, [], ['X-Requested-With' => 'XMLHttpRequest']);
+        $this->seeJson($expected);
+    }
+
+    // Test adding snapshots to campaigns
     public function testAddSnapshotsValidRequest()
     {
 
         $expectedSize = 3;
-        $campaign = Campaign::create([
-            'name' => 'asdasd',
-            'description' => 'sadasdasd',
-            'is_private' => false,
-            'snapshot_length' => 100,
-            'sample_duration' => 50,
-            'sample_frequency' => 10,
-            'measurement_frequency' => 5,
-        ]);
+        $campaign = factory(Campaign::class)->create();
 
         $snapshot_sensor_data_json = '{"accelerometerSamples": [{"measurements": ["2884548964675320317", "2884345555209779987"]}, {"measurements": ["2884258693897091839", "2884647920598088372"]}]}';
 
         $input = '{"snapshots":[';
-        for($i = 0; $i < $expectedSize; $i ++) {
-            if($i != 0) {
+        for ($i = 0; $i < $expectedSize; $i++) {
+            if ($i != 0) {
+                $input .= ',';
+            }
+            $input .= $snapshot_sensor_data_json;
+        }
+        $input .= ']}';
+
+
+        $request = ['snapshots' => $input, 'device_id' => $this->participant->device_id];
+
+        $this->call('POST', 'api/campaigns/' . $campaign->id . '/snapshots', $request);
+
+        $campaign = Campaign::find($campaign->id);
+
+        $actualSize = 0;
+        foreach ($campaign->snapshots as $snapshot) {
+            $this->assertEquals($this->participant->id, $snapshot->participant_id, "The participant ids do not match");
+            $actualSize++;
+        }
+
+        $this->assertEquals($expectedSize, $actualSize, "The amount of snapshots do not correspond");
+        $this->assertResponseOk();
+    }
+
+    public function testAddSnapshotsInvalidJsonRequest()
+    {
+        $campaign = factory(Campaign::class)->create();
+
+        $badRequest = ['snapshots' => 'this is not a json string', 'device_id' => $this->participant->device_id];
+
+        $this->call('POST', 'api/campaigns/' . $campaign->id . '/snapshots', $badRequest);
+
+        $this->assertResponseStatus(400);
+    }
+
+    public function testAddSnapshotsNoJsonRequest()
+    {
+        $campaign = factory(Campaign::class)->create();
+
+        $request = ['device_id' => $this->participant->device_id];
+
+        $this->call('POST', 'api/campaigns/' . $campaign->id . '/snapshots/', $request);
+        $this->assertResponseStatus(400);
+    }
+
+    public function testAddSnapshotsNotExistingCampaign()
+    {
+        $this->call('POST', 'api/campaigns/42/snapshots/');
+        $this->assertResponseStatus(404);
+    }
+
+    public function testAddSnapshotsRequestWithJsonNoSnapshots()
+    {
+        $expectedSize = 0;
+        $campaign = factory(Campaign::class)->create();
+
+        $input = '{"snapshots":[]}';
+
+        $request = ['snapshots' => $input, 'device_id' => $this->participant->device_id];
+
+        $this->call('POST', 'api/campaigns/' . $campaign->id . '/snapshots', $request);
+
+        $campaign = Campaign::find($campaign->id);
+
+        $actualSize = count($campaign->snapshots);
+
+        $this->assertEquals($expectedSize, $actualSize, "The amount of snapshots do not correspond");
+
+        $this->assertResponseOk();
+    }
+
+    public function testAddSnapshotsNoDeviceIDRequest()
+    {
+        $campaign = factory(Campaign::class)->create();
+
+        $snapshot_sensor_data_json = '{"accelerometerSamples": [{"measurements": ["2884548964675320317", "2884345555209779987"]}, {"measurements": ["2884258693897091839", "2884647920598088372"]}]}';
+        $input = '{"snapshots":[';
+        for ($i = 0; $i < 4; $i++) {
+            if ($i != 0) {
                 $input .= ',';
             }
             $input .= $snapshot_sensor_data_json;
@@ -225,85 +319,44 @@ class CampaignsControllerTest extends TestCase
 
         $request = ['snapshots' => $input];
 
-        $this->call('POST', '/campaigns/'.  $campaign->id .'/snapshots', $request);
-
-        $campaign = Campaign::find($campaign->id);
-
-        $actualSize = count($campaign->snapshots);
-
-        $this->assertEquals($expectedSize,$actualSize, "The amount of snapshots do not correspond");
-        $this->assertResponseOk();
-    }
-
-    public function testAddSnapshotsInvalidJsonRequest()
-    {
-        $expectedSize = 3;
-        $campaign = Campaign::create([
-            'name' => 'asdasd',
-            'description' => 'sadasdasd',
-            'is_private' => false,
-            'snapshot_length' => 100,
-            'sample_duration' => 50,
-            'sample_frequency' => 10,
-            'measurement_frequency' => 5,
-        ]);
-
-        $badRequest = ['snapshots' => 'this is not a json string'];
-
-        $this->call('POST', '/campaigns/'.  $campaign->id .'/snapshots', $badRequest);
-
-        $this->assertResponseStatus(400);
-    }
-
-    public function testAddSnapshotsNoJsonRequest()
-    {
-        $campaign = Campaign::create([
-            'name' => 'asdasd',
-            'description' => 'sadasdasd',
-            'is_private' => false,
-            'snapshot_length' => 100,
-            'sample_duration' => 50,
-            'sample_frequency' => 10,
-            'measurement_frequency' => 5,
-        ]);
-
-        $this->call('POST', '/campaigns/'. $campaign->id .'/snapshots/');
-        $this->assertResponseStatus(400);
-    }
-
-    public function testAddSnapshotsNotExistingCampaign()
-    {
-        $this->call('POST', '/campaigns/42/snapshots/');
+        $this->call('POST', 'api/campaigns/' . $campaign->id . '/snapshots/', $request);
         $this->assertResponseStatus(404);
     }
 
-    public function testAddSnapshotsRequestWithJsonNoSnapshots()
+    public function testUserIsAttachedOnCreation()
     {
-        $expectedSize = 0;
-        $campaign = Campaign::create([
-            'name' => 'asdasd',
-            'description' => 'sadasdasd',
-            'is_private' => false,
-            'snapshot_length' => 100,
-            'sample_duration' => 50,
-            'sample_frequency' => 10,
-            'measurement_frequency' => 5,
-        ]);
+        $createCampaignData = [
+            'name' => 'FourtyTwo',
+            'description' => 'I intend to find the answer to the universe and everything',
+            'is_private' => true,
+            'measurements_per_sample' => 5,
+            'samples_per_snapshot' => 5,
+            'sample_delay' => 100,
+            'measurement_frequency' => 100,
+            'campaign_length' => 10,
+            'questionnaire_placement' => 0,
+            'sensors' => [
+                5 => "on",
+                2 => "on"
+            ]
+        ];
 
-        $input = '{"snapshots":[]}';
+        $this->call('POST', '/campaigns', $createCampaignData);
 
-        $request = ['snapshots' => $input];
+        $this->assertRedirectedTo('/campaigns');
 
-        $this->call('POST', '/campaigns/'.  $campaign->id .'/snapshots', $request);
+        $campaign = Campaign::whereName('FourtyTwo')->first();
 
-        $campaign = Campaign::find($campaign->id);
-
-        $actualSize = count($campaign->snapshots);
-
-        $this->assertEquals($expectedSize,$actualSize, "The amount of snapshots do not correspond");
-
-        $this->assertResponseOk();
+        $this->assertNotNull($campaign->user, "The attached user is null");
+        $this->assertEquals($campaign->user->attributes, $this->user->attributes, "The user attached to the campaign is not the expected one");
     }
 
+    public function testAuthUserCampaignsView()
+    {
+        $expectedNames = $this->user->campaigns()->get(['name']);
 
+        foreach ($expectedNames as $name) {
+            $this->visit('/campaigns')->see($name->name);
+        }
+    }
 }

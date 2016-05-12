@@ -40,6 +40,20 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'email', 'password', 'remember_token',
     ];
+
+    protected $visible = [
+        'name'
+    ];
+
+    /**
+     * An user can be associated to many campaigns
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function campaigns()
+    {
+        return $this->hasMany(Campaign::class);
+    }
 }

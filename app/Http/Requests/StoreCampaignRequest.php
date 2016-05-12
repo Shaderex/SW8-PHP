@@ -23,12 +23,19 @@ class StoreCampaignRequest extends Request
      */
     public function rules()
     {
+
+
+
+
+
+
         return [
             'name' => 'required',
-            'snapshot_length' => 'required|numeric|min:1',
-            'sample_duration' => 'required|numeric|min:1|lte:snapshot_length',
-            'sample_frequency' => 'required|numeric|min:1|lte:sample_duration',
-            'measurement_frequency' => 'required|numeric|min:1|lte:sample_frequency',
+            'campaign_length' => 'required|numeric|min:1',
+            'samples_per_snapshot' => 'required|numeric|min:1',
+            'sample_delay' => 'required|numeric|min:1',
+            'measurements_per_sample' => 'required|numeric|min:1',
+            'measurement_frequency' => 'required|numeric|min:1',
         ];
     }
 }

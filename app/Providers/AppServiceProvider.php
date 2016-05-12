@@ -19,7 +19,7 @@ class AppServiceProvider extends ServiceProvider
 
             $other = Input::get($parameters[0]);
             return isset($other) && intval($value) <= intval($other);
-        }, "Du er ikke god");
+        }, "This should be bigger than the one above");
     }
 
     /**

@@ -47,7 +47,7 @@ class Handler extends ExceptionHandler
     {
         if ($e instanceof ModelNotFoundException) {
             if ($request->ajax()) {
-                return response()->toJson([
+                return response()->json([
                     'message' => 'Record not found',
                 ], 404);
             }

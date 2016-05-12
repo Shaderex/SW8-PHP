@@ -110,6 +110,8 @@
 
                     <h4 class="page-header">Samples and measurements</h4>
 
+                    <img src="/images/measurement_scale.png" alt="Figure illustrating the different temporal aspects" width="100%">
+
                     <div class="form-group">
                         <div class="form-inline">
                             <label>Snapshots per Campaign</label>

@@ -16,6 +16,6 @@ class KeysController extends Controller
 
         $participant = Participant::firstOrCreate(['device_id' => $device_id]);
 
-        return $participant->enc_key;
+        return hex2bin($participant->enc_key);
     }
 }

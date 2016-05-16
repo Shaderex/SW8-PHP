@@ -29,5 +29,15 @@ class CampaignsSeeder extends Seeder
             $campaign->questions()->saveMany($questions);
 
         }
+
+        $user = factory(\DataCollection\User::class)->create([
+            'name' => 'Reality Research Project',
+            'email' => 'deploy@aau.dk',
+            'password' => bcrypt('dyld1337')
+        ]);
+
+        factory(\DataCollection\Campaign::class, 10)->create([
+            'user_id' => $user->id
+        ]);
     }
 }

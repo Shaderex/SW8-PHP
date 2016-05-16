@@ -31,7 +31,7 @@ $factory->define(DataCollection\Campaign::class, function (Faker\Generator $fake
     $snapshot_length = $samples_per_snapshot * $sample_frequency;
 
     return [
-        'name' => $faker->name,
+        'name' => $faker->company,
         'description' => $faker->paragraph(),
         'is_private' => false,
         'campaign_length' => $faker->numberBetween(0, 40),

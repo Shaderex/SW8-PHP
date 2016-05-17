@@ -7,9 +7,7 @@ use DataCollection\Campaign;
 use DataCollection\Http\Requests\StoreCampaignRequest;
 use DataCollection\Participant;
 use DataCollection\Question;
-use DataCollection\Sensor;
 use DataCollection\Snapshot;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
@@ -71,13 +69,13 @@ class CampaignsController extends Controller
         return view('campaign.show2', compact('campaign', 'snapshotCount', 'participantsCount'));
     }
 
-    public function joinCampaign(Request $request)
+    public function joinCampaign(Request $request, $id)
     {
         $participant = Participant::firstOrCreate([
             'device_id' => $request->get('device_id'),
         ]);
 
-        $campaign = Campaign::with(['sensors', 'questions', 'user'])->findOrFail($request->get('campaign_id'));
+        $campaign = Campaign::with(['sensors', 'questions', 'user'])->findOrFail($id);
         $participant->campaigns()->attach($campaign->id);
 
         return $campaign;
@@ -119,12 +117,12 @@ class CampaignsController extends Controller
      */
     private function saveCampaign(array $attributes)
     {
-        if(!array_has($attributes, 'is_public')) {
+        if (!array_has($attributes, 'is_public')) {
             $attributes['is_private'] = true;
         }
 
         $attributes['sample_duration'] = $attributes['measurement_frequency'] * $attributes['measurements_per_sample'];
-        $attributes['sample_frequency'] =  $attributes['sample_duration'] + $attributes['sample_delay'];
+        $attributes['sample_frequency'] = $attributes['sample_duration'] + $attributes['sample_delay'];
         $attributes['snapshot_length'] = $attributes['sample_frequency'] * $attributes['samples_per_snapshot'];
 
         $campaign = Campaign::create($attributes);
@@ -148,5 +146,10 @@ class CampaignsController extends Controller
         return $campaign;
     }
 
+    public function destroy($id)
+    {
+        Campaign::findOrFail($id)->delete();
 
+        return redirect('/campaigns');
+    }
 }

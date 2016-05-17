@@ -182,11 +182,17 @@
                         Snapshots submitted
                     </li>
                 </ul>
-                <a href="/campaigns/{{ $campaign->id }}/snapshots" class="btn btn-primary btn-block">Get snapshot
-                    data</a>
+                <a href="/campaigns/{{ $campaign->id }}/snapshots" class="btn btn-primary btn-block">Get snapshot data</a>
                 <div class="smart-phone">
                     <div class="phone-view"></div>
                 </div>
+                <form action="{{ action('CampaignsController@destroy', [$campaign->id]) }}" method="POST">
+                    {!! csrf_field() !!}
+                    {!! method_field('DELETE') !!}
+                    <div class="form-group">
+                        <input type="submit" value="Delete campaign" class="btn btn-danger btn-block">
+                    </div>
+                </form>
             </div>
         </div>
     </div>

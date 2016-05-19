@@ -84,14 +84,22 @@ class CampaignsController extends Controller
     public function addSnapshots($id, Request $request)
     {
         $campaign = Campaign::findOrFail($id);
+        $compressedSnapshot = $request->get('snapshots');
 
-        if (!empty($request->all())) {
-            $snapshotJsonString = $request->get('snapshots');
+        if (!empty($request->all()) && !empty($compressedSnapshot)) {
+
+            $snapshotJsonString = gzdecode($compressedSnapshot);
+
+            if (! $snapshotJsonString ) {
+                return Response::json(['message' => 'Decompression failed'], 400);
+            }
+
             $snapshots = json_decode($snapshotJsonString, true);
 
             if (!$snapshots) {
                 return Response::json(['message' => 'Cannot decode json'], 400);
             }
+
 
             foreach ($snapshots['snapshots'] as $snapshotAsArray) {
                 $sensor_data_json = json_encode($snapshotAsArray);

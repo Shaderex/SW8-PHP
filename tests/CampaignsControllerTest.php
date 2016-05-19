@@ -238,6 +238,7 @@ class CampaignsControllerTest extends TestCase
         }
         $input .= ']}';
 
+        $input = gzencode($input);
 
         $request = ['snapshots' => $input, 'device_id' => $this->participant->device_id];
 
@@ -259,7 +260,7 @@ class CampaignsControllerTest extends TestCase
     {
         $campaign = factory(Campaign::class)->create();
 
-        $badRequest = ['snapshots' => 'this is not a json string', 'device_id' => $this->participant->device_id];
+        $badRequest = ['snapshots' => gzencode('this is not a json string'), 'device_id' => $this->participant->device_id];
 
         $this->call('POST', 'api/campaigns/' . $campaign->id . '/snapshots', $badRequest);
 
@@ -289,7 +290,7 @@ class CampaignsControllerTest extends TestCase
 
         $input = '{"snapshots":[]}';
 
-        $request = ['snapshots' => $input, 'device_id' => $this->participant->device_id];
+        $request = ['snapshots' => gzencode($input), 'device_id' => $this->participant->device_id];
 
         $this->call('POST', 'api/campaigns/' . $campaign->id . '/snapshots', $request);
 
@@ -317,7 +318,7 @@ class CampaignsControllerTest extends TestCase
         $input .= ']}';
 
 
-        $request = ['snapshots' => $input];
+        $request = ['snapshots' => gzencode($input)];
 
         $this->call('POST', 'api/campaigns/' . $campaign->id . '/snapshots/', $request);
         $this->assertResponseStatus(404);

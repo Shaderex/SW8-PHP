@@ -58,3 +58,21 @@ $factory->define(DataCollection\Question::class, function (Faker\Generator $fake
         'question' => $question,
     ];
 });
+
+$factory->define(DataCollection\Snapshot::class, function (Faker\Generator $faker) {
+    return [
+        'participant_id' => \DataCollection\Participant::firstOrCreate(['device_id' => 'fjolle'])->id,
+        'sensor_data_json' => '{
+            "_id": "573e098f86cd096683a6ffdc",
+            "company": "ISODRIVE",
+            "email": "aileenchristian@isodrive.com",
+            "phone": "+1 (904) 573-2138",
+            "address": "555 Strong Place, Norvelt, Federated States Of Micronesia, 9004",
+            "about": "Nisi laboris duis officia reprehenderit nisi exercitation dolore Lorem nulla eiusmod laborum. Fugiat duis magna ut quis cillum. Eiusmod fugiat dolore nisi id dolore. Voluptate velit nostrud incididunt sunt ex anim. Ex labore ullamco sit aliquip irure Lorem et eiusmod in elit tempor cillum exercitation. Eiusmod duis duis non ut fugiat non veniam Lorem laborum aliqua incididunt in cillum.\r\n",
+            "registered": "2014-05-09T02:20:53 -02:00",
+            "latitude": 21.3955,
+            "longitude": 120.083029
+          }',
+        'campaign_id' => 1,
+    ];
+});

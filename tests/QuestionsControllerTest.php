@@ -86,38 +86,4 @@ class QuestionsControllerTest extends TestCase
 
         $this->assertNotNull($this->campaign->questions);
     }
-
-    public function testChangeOrderAction()
-    {
-        $questionObjs = [];
-
-        foreach ($this->questions as $question) {
-            $questionObj = new Question();
-            $questionObj->question = $question;
-            $this->campaign->questions()->save($questionObj);
-
-            $questionObjs[] = $questionObj;
-        }
-
-        $input = [
-            'order' => [
-                0 => $questionObjs[3]->id,
-                1 => $questionObjs[2]->id,
-                2 => $questionObjs[1]->id,
-                3 => $questionObjs[0]->id,
-            ]
-        ];
-
-        $this->call('POST', "/campaigns/{$this->campaign->id}", $input);
-
-        $this->assertRedirectedTo("/campaigns/{$this->campaign->id}");
-
-        $count = count($questionObjs);
-
-        for ($i = 0; $i < $count; $i++) {
-            $question = Question::find($questionObjs[$i]->id);
-
-            $this->assertEquals($count - 1 - $i, $question->order);
-        }
-    }
 }

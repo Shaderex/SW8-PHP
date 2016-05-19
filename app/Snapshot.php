@@ -2,6 +2,7 @@
 
 namespace DataCollection;
 
+use Crypt;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -30,12 +31,21 @@ class Snapshot extends Model
     ];
 
     protected $appends = [
-        'data'
+        'snapshot'
     ];
 
-    public function getDataAttribute()
+    public function getSnapshotAttribute()
     {
         return json_decode($this->sensor_data_json);
     }
+
+    public function setSensorDataJsonAttribute($value) {
+        $this->attributes['sensor_data_json'] = Crypt::encrypt($value);
+    }
+
+    public function getSensorDataJsonAttribute() {
+        return Crypt::decrypt($this->attributes['sensor_data_json']);
+    }
+
 
 }

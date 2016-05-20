@@ -63,6 +63,11 @@ class CampaignsController extends Controller
     public function show($id)
     {
         $campaign = Campaign::with(['sensors', 'questions', 'user'])->findOrFail($id);
+
+        if ($campaign->user_id != Auth::user()->id) {
+            abort(403);
+        }
+
         $snapshotCount = $campaign->snapshots()->count();
         $participantsCount = $campaign->participants()->count();
 
@@ -148,7 +153,13 @@ class CampaignsController extends Controller
 
     public function destroy($id)
     {
-        Campaign::findOrFail($id)->delete();
+        $campaign = Campaign::findOrFail($id);
+        
+        if ($campaign->user_id != Auth::user()->id) {
+            abort(403);
+        }
+
+        $campaign->delete();
 
         return redirect('/campaigns');
     }

@@ -149,7 +149,7 @@ class CampaignsControllerTest extends TestCase
 
     public function testShowAction()
     {
-        $campaign = factory(Campaign::class)->create();
+        $campaign = factory(Campaign::class)->create(['user_id' => $this->user->id]);
         $this->visit("/campaigns/{$campaign->id}")->assertResponseOk();
     }
 

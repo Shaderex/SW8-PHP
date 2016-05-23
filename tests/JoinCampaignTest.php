@@ -74,9 +74,8 @@ class JoinCampaignTest extends TestCase
             ]
         ];
 
-        $this->post('api/campaigns/join', [
+        $this->post('api/campaigns/' . $this->campaign->id . '/participants', [
             'device_id' => $this->participant->device_id,
-            'campaign_id' => $this->campaign->id
         ])->seeJson($expected)->assertResponseOk();
 
         $this->assertEquals($this->campaign->id, $this->participant->campaigns()->first()->id);

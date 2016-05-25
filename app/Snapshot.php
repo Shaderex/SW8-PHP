@@ -27,7 +27,11 @@ class Snapshot extends Model
     ];
 
     protected $hidden = [
-        'sensor_data_json'
+        'sensor_data_json',
+        'id',
+        'created_at',
+        'updated_at',
+        'campaign_id'
     ];
 
     protected $appends = [

@@ -34,7 +34,7 @@ Route::get('phpinfo', function () {
 
 Route::group(['middleware' => 'api', 'prefix' => 'api'], function () {
     Route::get('/campaigns', 'CampaignsController@indexJson');
-    Route::post('/campaigns/join', 'CampaignsController@joinCampaign');
+    Route::post('/campaigns/{campaign}/participants', 'CampaignsController@joinCampaign');
     Route::post('/campaigns/{campaign}/snapshots', 'CampaignsController@addSnapshots');
     Route::get('/campaigns/{campaign}', 'CampaignsController@showJson');
     Route::get('/key', 'KeysController@getKey');
@@ -50,8 +50,8 @@ Route::group(['middleware' => 'web'], function () {
         Route::get('campaigns', 'CampaignsController@index');
         Route::get('/campaigns/create', 'CampaignsController@create');
         Route::post('/campaigns', 'CampaignsController@store');
+        Route::delete('/campaigns/{campaign}', 'CampaignsController@destroy');
         Route::get('/campaigns/{campaign}', 'CampaignsController@show');
-        Route::post('/campaigns/{campaign}', 'QuestionsController@changeOrder');
         Route::get('/campaigns/{campaign}/questions/create', 'QuestionsController@create');
         Route::post('/campaigns/{campaign}/questions', 'QuestionsController@store');
         Route::get('/campaigns/{campaign}/snapshots', 'SnapshotsController@index');
